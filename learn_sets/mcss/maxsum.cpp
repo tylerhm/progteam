@@ -5,39 +5,48 @@
 int oo = -1^1<<31;
 using namespace std;
 
+int n;
+
+int maxSum(vector<vector<int>>& arr)
+{
+    int max = INT_MIN;
+    for (int i = 0; i < n; i++)
+    {
+        for (int ii = i; ii < n; ii++)
+        {
+            int sum = 0;
+            for (int j = 0; j < n; j++)
+            {
+                if (ii != i)
+                    sum += arr[ii][j]-arr[i][j];
+                else
+                    sum += arr[ii][j];
+                if (sum > max)
+                    max = sum;
+                if (sum < 0)
+                    sum = 0;
+            }
+        }
+    }
+    return max;
+}
+
 int main()
 {
     int n_cases; cin >> n_cases;
     while (n_cases--) {
-        int n; cin >> n;
-        vector<vector<int>> mcss = vector<vector<int>>(n, vector<int>(n));
-        int val;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                cin >> val;
-                if (j == 0)
-                    mcss[i][j] = val;
-                else
-                    mcss[i][j] = mcss[i][j-1] + val;
-            }
-        }
-
-        for (int i = 1; i < n; i++)
+        cin >> n;
+        vector<vector<int>> partialCols = vector<vector<int>>(n, vector<int>(n, 0));
+        for (int i = 0; i < n; i++)
+        {
             for (int j = 0; j < n; j++)
-                mcss[i][j] += mcss[i-1][j];
-
-        int maxSum = -oo;
-        for (int i = n-1; i >= 0; i--) {
-            for (int j = n-1; j >= 0; j--) {
-                if (mcss[i][j] > maxSum)
-                    maxSum = mcss[i][j];
-                for (int ii = 0; ii <= i; ii++)
-                    for (int jj = 0; jj <= j; jj++)
-                        if (mcss[i][j] - mcss[ii][jj] > maxSum)
-                            maxSum = mcss[i][j] - mcss[ii][jj];
+            {
+                int val; cin >> val;
+                partialCols[i][j] += val;
+                if (i != 0) partialCols[i][j] += partialCols[i - 1][j];
             }
         }
-    cout << maxSum << "\n";
+        cout << maxSum(partialCols) << "\n";
     }
     return 0;
 }

@@ -157,10 +157,10 @@ int main()
             char row; cin >> row;
             int col; cin >> col;
             pair<int, int> coord = clickToIndex(row, col);
-            cout << "SELECTED MOVE " << coord.first << " " << coord.second << "\n";
+            //cout << "SELECTED MOVE " << coord.first << " " << coord.second << "\n";
 
-            cout << "BEFORE MOVE\n";
-            printBoard();
+            //cout << "BEFORE MOVE\n";
+            //printBoard();
 
             // initial non pop edge cases
             // click empty
@@ -182,16 +182,16 @@ int main()
             board[coord.first][coord.second] = FILL_CHAR;
             floodfill(coord, activeChar);
 
-            cout << "AFTER FILL\n";
-            printBoard();
+            //cout << "AFTER FILL\n";
+            //printBoard();
 
             // fix floaters
             smushDown();
             // fix stragglers
             smushLeft();
 
-            cout << "AFTER MOVE\n";
-            printBoard();
+            //cout << "AFTER MOVE\n";
+            //printBoard();
         }
 
         // count numcircles left

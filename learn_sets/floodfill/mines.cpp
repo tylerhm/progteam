@@ -47,22 +47,23 @@ int main()
     cin >> n;
     mine = vector<vector<vector<bool>>>(n, vector<vector<bool>>(n, vector<bool>(n)));
     used = vector<vector<vector<bool>>>(n, vector<vector<bool>>(n, vector<bool>(n)));
+    int inp;
     for (int x = 0; x < n; x++) {
         for (int y = 0; y < n; y++) {
             for (int z = 0; z < n; z++) {
-                int inp; cin >> inp;
+                cin >> inp;
                 mine[x][y][z] = (inp == 1);
             }
         }
     }
 
     int sims; cin >> sims;
-    cout << sims << "\n";
+    //cout << sims << "\n";
     for (int i = 0; i < sims; i++)
     {
         int x, y, z; cin >> x >> y >> z;
         cleared = 0;
-        if (mine[x][y][x])
+        if (mine[x][y][z] == true)
         {
             clearUsed();
             used[x][y][z] = true;

@@ -19,16 +19,15 @@ int main()
         {
             if (c < 97)
                 c += 32;
-            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u')
-                freq[c-'a']++;
+            freq[c-'a']++;
         }
 
-        cout << "Case " << iter++ << ": ";
-        cout << "a=" << freq[0];
-        cout << " e="<< freq[4];
-        cout << " i="<< freq[8];
-        cout << " o="<< freq[14];
-        cout << " u="<< freq[20];
+        cout << "Case " << iter++ << ":";
+        cout << " a=" << freq[0];
+        cout << " e=" << freq[4];
+        cout << " i=" << freq[8];
+        cout << " o=" << freq[14];
+        cout << " u=" << freq[20];
 
         cout << "\n";
     }
