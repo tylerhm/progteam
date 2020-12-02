@@ -10,14 +10,14 @@ using namespace std;
 #define MUL '*'
 #define DIV '/'
 
-#define NAN -1
-
 struct group
 {
     char op;
     int ans;
     int curAns;
     vector<pair<int, int>> locations;
+
+    group() {};
 };
 
 int n, g;
@@ -25,19 +25,36 @@ vector<vector<int>> board;
 unordered_map<char, group> charMap;
 vector<char> groups;
 
-vector<bool> usedCols, usedRows;
+vector<vector<bool>> usedCols, usedRows;
+
+void printBoard(int iter)
+{
+    cout << "KenKen Puzzle #" << iter << ": \n";
+        for (auto r : board)
+        {
+            for (auto v : r)
+                cout << v;
+            cout << "\n";
+        }
+        cout << "\n";
+}
 
 bool solve(int curGroup, int curSquare)
 {
-    group g = charMap[groups[curGroup]];
     if (curGroup == groups.size()) return true;
+    group g = charMap[groups[curGroup]];
     if (curSquare == g.locations.size()) return solve(curGroup+1, 0);
 
+    cout << "GROUP: " << curGroup << " SQUARE: " << curSquare << endl;
+    cout << "LAST SQUARE: " << g.locations.size() << endl;
+
+    printBoard(-1);
+    
     int row = g.locations[curSquare].first;
     int col = g.locations[curSquare].second;
     for (int i = 1; i <= n; i++)
     {
-        if (usedRows[row] || usedCols[col])
+        if (usedRows[row][i-1] || usedCols[col][i-1])
             continue;
 
         // check if this is the first value
@@ -45,25 +62,117 @@ bool solve(int curGroup, int curSquare)
         if (curSquare == 0)
         {
             charMap[groups[curGroup]].curAns = i;
-            usedRows[row] = true;
-            usedCols[col] = true;
+            usedRows[row][i-1] = true;
+            usedCols[col][i-1] = true;
+            board[row][col] = i;
             if (solve(curGroup, curSquare+1))
                 return true;
-            usedRows[row] = false;
-            usedCols[col] = false;
+            charMap[groups[curGroup]].curAns = 0;
+            usedRows[row][i-1] = false;
+            usedCols[col][i-1] = false;
         }
-        else
+        else if (curSquare < g.locations.size() - 1)
         {
             switch (g.op)
             {
                 case ADD:
                     if (g.curAns + i <= g.ans)
                     {
-                        
+                        charMap[groups[curGroup]].curAns += i;
+                        usedRows[row][i-1] = true;
+                        usedCols[col][i-1] = true;
+                        board[row][col] = i;
+                        if (solve(curGroup, curSquare+1))
+                            return true;
+                        charMap[groups[curGroup]].curAns = 0;
+                        usedRows[row][i-1] = false;
+                        usedCols[col][i-1] = false;
                     }
+                    else
+                        return false;
+                case MUL:
+                    if (g.curAns * i <= g.ans)
+                    {
+                        charMap[groups[curGroup]].curAns *= i;
+                        usedRows[row][i-1] = true;
+                        usedCols[col][i-1] = true;
+                        board[row][col] = i;
+                        if (solve(curGroup, curSquare+1))
+                            return true;
+                        charMap[groups[curGroup]].curAns /= i;
+                        usedRows[row][i-1] = false;
+                        usedCols[col][i-1] = false;
+                    }
+                    else
+                        return false;
+            }
+        }
+        else
+        {
+            switch (g.op)
+            {
+                case ADD:
+                    if (g.curAns + i == g.ans)
+                    {
+                        charMap[groups[curGroup]].curAns += i;
+                        usedRows[row][i-1] = true;
+                        usedCols[col][i-1] = true;
+                        board[row][col] = i;
+                        if (solve(curGroup, curSquare+1))
+                            return true;
+                        charMap[groups[curGroup]].curAns = 0;
+                        usedRows[row][i-1] = false;
+                        usedCols[col][i-1] = false;
+                    }
+                    else
+                        return false;
                 case SUB:
-                case MULT:
+                    if (abs(g.curAns - i) == g.ans)
+                    {
+                        int oldAns = charMap[groups[curGroup]].curAns;
+                        charMap[groups[curGroup]].curAns = g.ans;
+                        usedRows[row][i-1] = true;
+                        usedCols[col][i-1] = true;
+                        board[row][col] = i;
+                        if (solve(curGroup, curSquare+1))
+                            return true;
+                        charMap[groups[curGroup]].curAns = oldAns;
+                        usedRows[row][i-1] = false;
+                        usedCols[col][i-1] = false;
+                    }
+                    else
+                        return false;
+                case MUL:
+                    if (g.curAns * i == g.ans)
+                    {
+                        charMap[groups[curGroup]].curAns *= i;
+                        usedRows[row][i-1] = true;
+                        usedCols[col][i-1] = true;
+                        board[row][col] = i;
+                        if (solve(curGroup, curSquare+1))
+                            return true;
+                        charMap[groups[curGroup]].curAns /= i;
+                        usedRows[row][i-1] = false;
+                        usedCols[col][i-1] = false;
+                    }
+                    else
+                        return false;
                 case DIV:
+                    if ((double)g.curAns / i == g.ans || (double)i / g.curAns == g.ans)
+                    {
+                        int oldAns = charMap[groups[curGroup]].curAns;
+                        charMap[groups[curGroup]].curAns = g.ans;
+                        usedRows[row][i-1] = true;
+                        usedCols[col][i-1] = true;
+                        board[row][col] = i;
+                        if (solve(curGroup, curSquare+1))
+                            return true;
+                        charMap[groups[curGroup]].curAns = oldAns;
+                        usedRows[row][i-1] = false;
+                        usedCols[col][i-1] = false;
+                    }
+                    else
+                        return false;
             }
         }
     }
@@ -84,8 +193,8 @@ int main()
         charMap = unordered_map<char, group>();
         groups = vector<char>(g);
 
-        usedCols = vector<bool>(n, false);
-        usedRows = vector<bool>(n, false);
+        usedCols = vector<vector<bool>>(n, vector<bool>(n, false));
+        usedRows = vector<vector<bool>>(n, vector<bool>(n, false));
 
         for (int i = 0; i < n; i++)
         {
@@ -111,15 +220,8 @@ int main()
             charMap[c].op = op;
         }
 
-        solve();
-        cout << "KenKen Puzzle #" << iter++ << ": \n";
-        for (auto r : board)
-        {
-            for (auto v : r)
-                cout << v;
-            cout << "\n";
-        }
-        cout << "\n";
+        solve(0, 0);
+        printBoard(iter++);
 
         cin >> n;
     }
