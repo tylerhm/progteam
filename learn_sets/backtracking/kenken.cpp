@@ -25,7 +25,8 @@ vector<vector<int>> board;
 unordered_map<char, group> charMap;
 vector<char> groups;
 
-vector<vector<bool>> usedCols, usedRows;
+vector<vector<bool>> usedCols, usedRows, preproc;
+
 
 void printBoard(int iter)
 {
@@ -39,19 +40,16 @@ void printBoard(int iter)
         cout << "\n";
 }
 
-bool solve(int curGroup, int curSquare)
+bool solve(int curGroup, int curSquare, int mustBe)
 {
     if (curGroup == groups.size()) return true;
     group g = charMap[groups[curGroup]];
-    if (curSquare == g.locations.size()) return solve(curGroup+1, 0);
-
-    cout << "GROUP: " << curGroup << " SQUARE: " << curSquare << endl;
-    cout << "LAST SQUARE: " << g.locations.size() << endl;
-
-    printBoard(-1);
-    
+    if (curSquare == g.locations.size()) return solve(curGroup+1, 0, -1);    
     int row = g.locations[curSquare].first;
     int col = g.locations[curSquare].second;
+    if (preproc[row][col]) return solve(curGroup, curSquare+1, -1);
+
+
     for (int i = 1; i <= n; i++)
     {
         if (usedRows[row][i-1] || usedCols[col][i-1])
@@ -65,46 +63,50 @@ bool solve(int curGroup, int curSquare)
             usedRows[row][i-1] = true;
             usedCols[col][i-1] = true;
             board[row][col] = i;
-            if (solve(curGroup, curSquare+1))
+            if (curSquare == g.locations.size() - 1)
+            {
+                switch (g.op)
+                {
+                    case ADD:
+                        if (solve(curGroup, curSquare+1, ))
+                }
+            }
+            if (solve(curGroup, curSquare+1, -1))
                 return true;
             charMap[groups[curGroup]].curAns = 0;
             usedRows[row][i-1] = false;
             usedCols[col][i-1] = false;
         }
-        else if (curSquare < g.locations.size() - 1)
+        else if (curSquare < g.locations.size() - 2)
         {
             switch (g.op)
             {
                 case ADD:
-                    if (g.curAns + i <= g.ans)
+                    if (g.curAns + i < g.ans)
                     {
                         charMap[groups[curGroup]].curAns += i;
                         usedRows[row][i-1] = true;
                         usedCols[col][i-1] = true;
                         board[row][col] = i;
-                        if (solve(curGroup, curSquare+1))
+                        if (solve(curGroup, curSquare+1, ))
                             return true;
                         charMap[groups[curGroup]].curAns = 0;
                         usedRows[row][i-1] = false;
                         usedCols[col][i-1] = false;
                     }
-                    else
-                        return false;
                 case MUL:
-                    if (g.curAns * i <= g.ans)
+                    if (g.curAns * i < g.ans)
                     {
                         charMap[groups[curGroup]].curAns *= i;
                         usedRows[row][i-1] = true;
                         usedCols[col][i-1] = true;
                         board[row][col] = i;
-                        if (solve(curGroup, curSquare+1))
+                        if (solve(curGroup, curSquare+1, -1))
                             return true;
                         charMap[groups[curGroup]].curAns /= i;
                         usedRows[row][i-1] = false;
                         usedCols[col][i-1] = false;
                     }
-                    else
-                        return false;
             }
         }
         else
@@ -124,8 +126,6 @@ bool solve(int curGroup, int curSquare)
                         usedRows[row][i-1] = false;
                         usedCols[col][i-1] = false;
                     }
-                    else
-                        return false;
                 case SUB:
                     if (abs(g.curAns - i) == g.ans)
                     {
@@ -140,8 +140,6 @@ bool solve(int curGroup, int curSquare)
                         usedRows[row][i-1] = false;
                         usedCols[col][i-1] = false;
                     }
-                    else
-                        return false;
                 case MUL:
                     if (g.curAns * i == g.ans)
                     {
@@ -155,8 +153,6 @@ bool solve(int curGroup, int curSquare)
                         usedRows[row][i-1] = false;
                         usedCols[col][i-1] = false;
                     }
-                    else
-                        return false;
                 case DIV:
                     if ((double)g.curAns / i == g.ans || (double)i / g.curAns == g.ans)
                     {
@@ -171,8 +167,6 @@ bool solve(int curGroup, int curSquare)
                         usedRows[row][i-1] = false;
                         usedCols[col][i-1] = false;
                     }
-                    else
-                        return false;
             }
         }
     }
@@ -195,6 +189,7 @@ int main()
 
         usedCols = vector<vector<bool>>(n, vector<bool>(n, false));
         usedRows = vector<vector<bool>>(n, vector<bool>(n, false));
+        preproc = vector<vector<bool>>(n, vector<bool>(n, false));
 
         for (int i = 0; i < n; i++)
         {
@@ -218,6 +213,17 @@ int main()
 
             charMap[c].ans = ans;
             charMap[c].op = op;
+
+            if (charMap[c].op == NON)
+            {
+                int row = charMap[c].locations[0].first;
+                int col = charMap[c].locations[0].second;
+
+                board[row][col] = ans;
+                preproc[row][col] = true;
+                usedRows[row][ans] = true;
+                usedCols[col][ans] = true;
+            }
         }
 
         solve(0, 0);
