@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "map": "cpp",
+        "*.tcc": "cpp",
+        "bitset": "cpp",
+        "iostream": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "vector": "cpp"
+    }
+}

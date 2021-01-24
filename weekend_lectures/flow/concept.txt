@@ -1,0 +1,4 @@
+Imagine a Directed Graph, with a Source on the left and a Sink on the right.
+The maximum flow of a network is the maximum flow recieved by the sink if we were to flush the network.
+
+
