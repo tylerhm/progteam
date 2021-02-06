@@ -5,14 +5,6 @@ typedef long long int ll;
 int oo = -1^1<<31;
 using namespace std;
 
-/*
-[ 0 1 0 0 0 ]   [ f(1) ]   [ f(2) ]
-[ 0 0 1 0 0 ]   [ f(2) ]   [ f(3) ]
-[ 0 0 0 1 0 ] * [ f(3) ] = [ f(4) ]
-[ 0 0 0 0 1 ]   [ f(4) ]   [ f(5) ]
-[ 1 0 1 1 0 ]   [ f(5) ]   [ f(6) ]
-*/
-
 template <typename T>
 struct FastMatExpo {
     ll n, m;
@@ -23,7 +15,7 @@ struct FastMatExpo {
         ident = vector<vector<T>>(n, vector<T>(n, 0));
         for (int i = 0; i < n; i++) ident[i][i] = 1;
     }
-    vector<vector<T>> modPow(ll pow) { return res = applyMod(fastPow(scalar, pow)); }
+    vector<vector<T>> modPow(ll pow) { return res = applyMod(fastPow(scalar, pow-1)); }
     vector<vector<T>> fastPow(vector<vector<T>> mat, ll pow) {
         mat = applyMod(mat);
         if (pow==0) return ident;
@@ -45,41 +37,36 @@ struct FastMatExpo {
                 mat[i][j] %= m;
         return mat;
     }
-    ll getAns(ll index) {
+    ll getAns() {
         ll ans = 0;
         for (int i = 0; i < n; i++)
-            ans = (ans + ((res[index][i] * mult[i][index]) % m)) % m;
+            ans = (ans + ((res[0][i] * mult[i][0]) % m)) % m;
         return ans;
     }
 };
 
-void solve(int t) {
-    ll n, m; cin >> n >> m;
-    n--;
-    vector<vector<ll>> scalar = {{0, 1, 0, 0, 0},
-                                 {0, 0, 1, 0, 0},
-                                 {0, 0, 0, 1, 0},
-                                 {0, 0, 0, 0, 1},
-                                 {1, 0, 1, 1, 0}};
-    vector<vector<ll>> mult = {{0},
-                               {1},
-                               {1},
-                               {1},
-                               {3}};
-
-    FastMatExpo<ll> fme = FastMatExpo<ll>(scalar, mult, m);
-    fme.modPow(n);
-    cout << fme.getAns(0) << nl;
+void solve(ll n) {
+    ll m; cin >> m;
+    n += 2;
+    vector<vector<ll>> scalar = {{0, 1},
+                                 {1, 1}};
+    vector<vector<ll>> mult = {{1},
+                               {1}};
+    FastMatExpo<ll> fib = FastMatExpo<ll>(scalar, mult, m);
+    fib.modPow(n);
+    cout << fib.getAns() << nl;
 }
 
 int main()
 {
     cin.tie(0)->sync_with_stdio(0);
-    cin.exceptions(cin.failbit);
+	cin.exceptions(cin.failbit);
 
-    int tt; cin >> tt;
-    for (int t = 0; t < tt; t++)
-        solve(t);    
+	ll n; cin >> n;
+    while (n != 0) {
+        solve(n);
+        cin >> n;
+    }
 
     return 0;
 }
