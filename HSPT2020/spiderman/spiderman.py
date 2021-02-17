@@ -21,6 +21,10 @@ def solve():
         u, v = [int(x) for x in input().split()]
         u-=1
         v-=1
+        print(n)
+        print(u)
+        print(v)
+        print()
         adjList[u].append(v)
         adjList[v].append(u)
     for u in range(n):
