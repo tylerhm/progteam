@@ -1,4 +1,6 @@
 def bfs(adjList, skipU, skipV, n):
+
+    # Basic BFS with a skipped edge
     q = []
     visited = [False for _ in range(n)]
     q.append(0)
@@ -15,20 +17,36 @@ def bfs(adjList, skipU, skipV, n):
     return visited[n-1]
 
 def solve():
+
     n, m = [int(x) for x in input().split()]
+
+    # List comprehension for 2D array
     adjList = [[] for _ in range(n)]
+
+    # For every edge
     for _ in range(m):
+        # Get and 0 index the indices
         u, v = [int(x) for x in input().split()]
         u-=1
         v-=1
+
+        # Create edge between u and v
+        print("n = " + str(n) + " m = " + str(m))
+        print("u = " + str(u) + " v = " + str(v))
         adjList[u].append(v)
         adjList[v].append(u)
+
+    # For every node
     for u in range(n):
+        # For every edge in that node
         for v in adjList[u]:
             skipU, skipV = u, v
+            # BFS without edge, if it fails we win
             if not bfs(adjList, skipU, skipV, n):
                 print("Halt, Spiderman! Plans Thwarted!")
                 return
+
+    # Made it through every edge safely
     print("How Sad, Perpetrator Triumphed")
 
 

@@ -5,6 +5,7 @@ typedef long long int ll;
 int oo = -1^1<<31;
 using namespace std;
 
+// Inverse Ackerman DSU
 struct DSU {
 	vector<int> s;
 	DSU(int n): s(n, -1) {}
@@ -22,13 +23,24 @@ struct DSU {
 
 void solve() {
 	int n, m; cin >> n >> m;
+
+	// Create DSU on children
 	DSU dsu = DSU(n);
+	// Keep track of how many hands each child still has
 	vector<int> freeHands(n, 2);
+	// Max blob size
 	int maxBlob = 0;
+
+	// For every collision
 	for (int i = 0; i < m; i++) {
+		// Get and 0 index collision
 		int a, b; cin >> a >> b;
 		a--; b--;
+
+		// If either child doesn't have hands left, then don't join
 		if (freeHands[a] == 0 || freeHands[b] == 0) continue;
+
+		// Reduce hands and join
 		freeHands[a]--; freeHands[b]--;
 		dsu.join(a, b);
 		maxBlob = max(maxBlob, dsu.size(a));

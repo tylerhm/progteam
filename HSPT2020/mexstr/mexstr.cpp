@@ -5,15 +5,24 @@ typedef long long int ll;
 int oo = -1^1<<31;
 using namespace std;
 
-void solve() {
-	// Get the full line
-	string line; getline(cin, line);
-	
-	// For every character, if it's not e print it
-	for (char c : line)
-		if (c != 'e')
-			cout << c;
-	cout << nl;
+bool addOne(string s, int index) {
+    
+}
+
+bool getExl(string s) {
+    
+}
+
+void solve(int t) {
+    string s;
+    cin >> s;
+
+    string test = "";
+    for (int i = 0; i < s.size(); i++) {
+        s += "-";
+        if (getExl(s))
+            return;
+    }
 }
 
 int main()
@@ -22,10 +31,8 @@ int main()
 	cin.exceptions(cin.failbit);
 
 	int tt; cin >> tt;
-	// Get rid of new line
-	string newLinesSucc; getline(cin, newLinesSucc);
 	for (int t = 0; t < tt; t++)
-		solve();
+		solve(t);    
 
     return 0;
 }
