@@ -31,8 +31,6 @@ def solve():
         v-=1
 
         # Create edge between u and v
-        print("n = " + str(n) + " m = " + str(m))
-        print("u = " + str(u) + " v = " + str(v))
         adjList[u].append(v)
         adjList[v].append(u)
 
@@ -43,11 +41,11 @@ def solve():
             skipU, skipV = u, v
             # BFS without edge, if it fails we win
             if not bfs(adjList, skipU, skipV, n):
-                print("Halt, Spiderman! Plans Thwarted!")
+                print("Halt, Spider-Man! Plans Thwarted!")
                 return
 
     # Made it through every edge safely
-    print("How Sad, Perpetrator Triumphed")
+    print("How Sad, Perpetrator Triumphed.")
 
 
 if __name__ == "__main__":

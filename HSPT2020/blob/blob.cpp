@@ -29,7 +29,7 @@ void solve() {
 	// Keep track of how many hands each child still has
 	vector<int> freeHands(n, 2);
 	// Max blob size
-	int maxBlob = 0;
+	int maxBlob = 1;
 
 	// For every collision
 	for (int i = 0; i < m; i++) {

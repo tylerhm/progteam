@@ -1,22 +1,16 @@
 #include <bits/stdc++.h>
-#define all(a) begin(a), end(a)
-#define nl '\n'
-typedef long long int ll;
-int oo = -1^1<<31;
 using namespace std;
 
-void solve(int t) {
+#define rep(i, a, b) for (int i = a; i < (b); ++i)
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef vector<int> vi;
 
-}
-
-int main()
-{
+int main() {
   cin.tie(0)->sync_with_stdio(0);
-	cin.exceptions(cin.failbit);
+  cin.exceptions(cin.failbit);
 
-	int tt; cin >> tt;
-	for (int t = 1; t <= tt; t++)
-		solve(t);
-
-    return 0;
+  
 }
