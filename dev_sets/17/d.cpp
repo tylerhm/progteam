@@ -4,57 +4,71 @@
 typedef long long int ll;
 int oo = -1^1<<31;
 using namespace std;
+struct Point {
+  int x, y;
+};
 
-int iter = 0;
+bool operator<(const Point &a, const Point &b) {
+  if (a.x != b.x) return a.x < b.x;
+  return a.y < b.y;
+}
+
+set<Point> points;
+map<int, vector<Point>> rows, cols;
+
+bool validPair(Point &p1, Point &p2) {
+  if (p1.x > p2.x || p1.y > p2.y) return false;
+  int x1 = p1.x;
+  int y1 = p1.y;
+  int x2 = (p1.x != p2.x ? p2.x : x1 + (p2.y - p1.y));
+  int y2 = (p1.y != p2.y ? p2.y : y1 + (p2.x - p1.x));
+  return points.count(Point{x1, y2}) &&
+         points.count(Point{x2, y1}) &&
+         points.count(Point{x2, y2});
+}
 
 bool solve() {
 
-    ll n;
+  int n;
+  if (!(cin >> n))
+      return false;
 
-    if (!(cin >> n))
-        return false;
+  points.clear();
+  rows.clear();
+  cols.clear();
 
-    map<ll, vector<ll>> rows, cols;
+  for (int i = 0; i < n; i++) {
+      int x, y; cin >> x >> y;
+      Point p {x, y};
+      points.insert(p);
+      cols[x].push_back(p);
+      rows[y].push_back(p);
+  }
 
-    for (int i = 0; i < n; i++) {
-        ll x, y; cin >> x >> y;
-        cols[x].push_back(y);
-        rows[y].push_back(x);
-    }
-
-    if (rows.size() == 1 || cols.size() == 1) {
-        cout << 0 << nl;
-        return true;
-    }
-
-    ll maxSize = 0;
-    for (auto row : rows) {
-        ll y = row.first;
-        auto inRow = row.second;
-
-        for (int i = 0; i < inRow.size() - 1; i++) {
-            for (int j = i + 1; j < inRow.size(); j++) {
-                ll side = inRow[j] - inRow[i];
-
-                if (!count(all(cols[inRow[i]]), (y + side)) || !count(all(cols[inRow[j]]), (y + side))) continue;
-
-                maxSize = max(maxSize, side);
-            }
+  int maxSize = 0;
+  for (auto &col: cols) {
+    bool doCols = (col.second.size() > n / col.second.size());
+    for (Point &p1 : col.second) {
+      if (doCols) {
+        for (Point &p2 : rows[p1.y]) {
+          if (p2.x - p1.x <= maxSize) continue;
+          if (validPair(p1, p2)) maxSize = p2.x - p1.x;
         }
+      }
+      else {
+        for (Point &p2 : col.second) {
+          if (p2.y - p1.y <= maxSize) continue;
+          if (validPair(p1, p2)) maxSize = p2.y - p1.y;
+        }
+      }
     }
-
-    cerr << "PRINTING ANS " << iter++ << nl;
-    cout << maxSize << nl;
-
-    return true;
+  }
+  cout << maxSize << nl;
+  return true;
 }
 
 int main()
 {
-    cin.tie(0)->sync_with_stdio(0);
-	cin.exceptions(cin.failbit);
-
-    while (solve());
-    
-    return 0;
+  while(solve());
+  return 0;
 }

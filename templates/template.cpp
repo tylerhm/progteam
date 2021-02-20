@@ -11,12 +11,12 @@ void solve(int t) {
 
 int main()
 {
-    cin.tie(0)->sync_with_stdio(0);
+  cin.tie(0)->sync_with_stdio(0);
 	cin.exceptions(cin.failbit);
 
 	int tt; cin >> tt;
-	for (int t = 0; t < tt; t++)
-		solve(t);    
+	for (int t = 1; t <= tt; t++)
+		solve(t);
 
     return 0;
 }

@@ -37,9 +37,8 @@ public class knapsack {
     }
     //go returns the minimum value lost from this index
     static int go(int index, int over){
-        if(index==n || over<=0){
-            return 0;
-        }
+        if(over<=0) return 0;
+        if (index==n && over>0) return Integer.MAX_VALUE/2;
         if(dp[index][over]!=-1)return dp[index][over];
         //MINIMIZE LOSSES
         int min = Integer.MAX_VALUE;
