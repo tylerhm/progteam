@@ -29,17 +29,10 @@ def solve():
         u, v = [int(x) for x in input().split()]
         u-=1
         v-=1
-<<<<<<< HEAD
 
         # Create edge between u and v
         print("n = " + str(n) + " m = " + str(m))
         print("u = " + str(u) + " v = " + str(v))
-=======
-        print(n)
-        print(u)
-        print(v)
-        print()
->>>>>>> e0eab9f1ff0f4c23c575461d2fe985e80f250c86
         adjList[u].append(v)
         adjList[v].append(u)
 
