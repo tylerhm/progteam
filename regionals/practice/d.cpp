@@ -9,8 +9,11 @@ typedef pair<int, int> pii;
 typedef vector<int> vi;
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    cin.exceptions(cin.failbit);
+  cin.tie(0)->sync_with_stdio(0);
+  cin.exceptions(cin.failbit);
 
-    return 0;    
+  string inp; cin >> inp;
+  cout << (inp.substr(0, 3) == "555"? 1 : 0) << '\n';
+
+  return 0;  
 }

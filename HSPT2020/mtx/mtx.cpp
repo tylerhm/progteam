@@ -6,15 +6,11 @@ int oo = -1^1<<31;
 using namespace std;
 
 void solve(int t) {
-  // Answer prefix
-  cout << "Server #" << t << ": ";
-
   // Get users
   int n; cin >> n;
   
   // Store current best
-  int maxPower = -1;
-  bool isFree = false;
+  int maxFree = -1, maxPaid = -1;
 
   for (int i = 0; i < n; i++) {
     // Get user data
@@ -24,14 +20,11 @@ void solve(int t) {
     int power = skill * (1000 + money);
 
     // Update maxPower and isFree
-    if (power > maxPower) {
-      maxPower = power;
-      isFree = money == 0;
-    }
+    money == 0 ? maxFree = max(maxFree, power) : maxPaid = max(maxPaid, power);
   }
 
   // Answer
-  cout << (isFree ? "YES" : "NO") << nl;
+  cout << (maxFree > maxPaid ? "YES" : "NO") << nl;
 }
 
 int main()

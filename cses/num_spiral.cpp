@@ -4,25 +4,31 @@
 int oo = -1^1<<31;
 using namespace std;
 
+void solve() {
+    ll x, y; cin >> y >> x;
+    ll z = max(x, y);
+    ll z2 = (z-1)*(z-1), ans;
+    if (z&1) {
+        if (y == z)
+            ans = z2+x;
+        else
+            ans = z2+2*z-y;
+    } else {
+        if (x == z)
+            ans = z2+y;
+        else
+            ans = z2+2*z-x;
+    }
+    cout << ans << "\n";
+}
+
 int main()
 {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    int n; cin >> n;
-    for (int i = 0; i < n; i++) {
-        ll x, y; cin >> y >> x;
-        
-        if (x >= y) {
-            if (x&1) cout << (x*x-(y-1));
-            else cout << (x+(y-1));
-        }
-        else {
-            if (y&1) cout << (y+(x-1));
-            else cout << (y*y-(x-1));
-        }
-        cout << "\n";
-    }
+    int t; cin >> t;
+    while(t--) solve();
 
     return 0;
 }

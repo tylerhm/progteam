@@ -9,6 +9,7 @@ using namespace std;
 
 ll fastPow(ll b, ll p) {
     b%=MOD;
+    cout << b << ' ' << p << endl;
     if (p==0)return 1;
     if (p==1)return b;
     if (p&1)return b*fastPow(b,p-1)%MOD;
@@ -22,7 +23,7 @@ int main()
 
     ll b, p; cin >> b >> p;
     while (b != 0) {
-        cout << fastPow(b, p) << nl;
+        cout << fastPow(b, p) << endl;
         cin >> b >> p;
     }
 

@@ -12,5 +12,19 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    return 0;    
+    int n, k; cin >> n >> k;
+
+    int solidSum = 0;
+    rep(i, 0, k) {
+        int val; cin >> val;
+        solidSum += val;
+    }
+
+    // try max
+    int maxSum = solidSum + 3 * (n - k);
+    int minSum = solidSum - 3 * (n - k);
+
+    cout << (minSum / (double)n) << ' ' << (maxSum / (double)n) << "\n";
+
+    return 0;
 }

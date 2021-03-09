@@ -12,5 +12,21 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
+    int n; cin >> n;
+    vi nums(n);
+    for (auto &x : nums) cin >> x;
+
+    int passes = 0;
+
+    while (nums.size()) {
+        passes++;
+        int i;
+        for (i = 0; i < nums.size(); i++)
+            if (nums[i-1] > nums[i]) break;
+        nums.erase(nums.begin(), nums.begin() + i);
+    }
+
+    cout << passes << '\n';
+
     return 0;    
 }
