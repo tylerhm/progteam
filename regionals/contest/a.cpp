@@ -9,35 +9,38 @@ typedef pair<int, int> pii;
 typedef vector<int> vi;
 
 string keys;
+int matrix[10][10];
+ll minTime = LLONG_MAX;
 
-ll evalSeconds(string order) {
-    int curIndex = 0;
-    char curKey = order[curIndex];
-    ll seconds = 0;
-    rep(i, 0, keys.size()) {
-        
-        bool found = true;
-        int intermediateSeconds = 0;
-        while (curKey != keys[i]) {
-            if (curIndex == order.size()-1) {
-                found = false;
-                break;
-            }
-            intermediateSeconds++;
-            curKey = order[++curIndex];
-        }
+ll eval(vector<int> &perm) {
 
-        if (!found) {
-            intermediateSeconds = 0;
-            while (curKey != keys[i]) {
-                intermediateSeconds++;
-                curKey = order[--curIndex];
-            }
-        }
-        seconds += intermediateSeconds + 1;
+    vector<vector<int>> dist(10, vector<int>(10, 0));
+    for (int i = 0; i < perm.size(); i++)
+        for (int j = 0; j < perm.size(); j++)
+            dist[perm[i]][perm[j]] = abs(i-j)+1;
+
+    ll ans = dist[perm[0]][keys[0]-'0'];
+    for (int i = 1; i <= 9; i++)
+        for (int j = 1; j <= 9; j++)
+            ans += matrix[i][j]*dist[i][j];
+
+    return ans;
+}
+
+void permute(int p, vector<bool> &used, vector<int>& perm) {
+    if (p == perm.size()) {
+        minTime = min(minTime, eval(perm));
+        return;
     }
 
-    return seconds;
+    for (int i = 1; i <= 9; i++) {
+        if (!used[i]) {
+            used[i] = true;
+            perm[p] = i;
+            permute(p + 1, used, perm);
+            used[i] = false;
+        }
+    }
 }
 
 int main() {
@@ -46,19 +49,18 @@ int main() {
 
     cin >> keys;
 
-    vector<vector<int>> matrix(10, vector<int>(10, 0));
-    for (int i = 1; i < keys.size(); i++) {
-        int from = keys[i-1]-'0';
-        int to = keys[i]-'0';
+    // Process transitions
+    rep(i, 0, keys.size()-1) {
+        int from = keys[i]-'0';
+        int to = keys[i+1]-'0';
         matrix[from][to]++;
-        matrix[to][from]++;
     }
 
-    for (int i = 1; i < 10; i++) {
-        for (int j = 1; j < 10; j++) {
-            cout << i << " and " << j << " have prio " << matrix[i][j] << "\n";
-        }
-    }
+    vector<bool> used(10, false);
+    vector<int> perm(9);
+    permute(0, used, perm);
+
+    cout << minTime << "\n";
   
     return 0;    
 }
