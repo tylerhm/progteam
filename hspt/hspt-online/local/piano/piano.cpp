@@ -12,14 +12,13 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    ll n; cin >> n;
-
-    while (n != 1) {
-        cout << n << " ";
-        if (n & 1) n = n*3 + 1;
-        else n /= 2;
+    int cases; cin >> cases;
+    for (int i = 0; i < cases; i++) {
+        string in; cin >> in;
+        for (int i = 0; i < in.length(); i++)
+            cout << "L";
+        cout << "\n";
     }
-    cout << n << "\n";
 
     return 0;    
 }

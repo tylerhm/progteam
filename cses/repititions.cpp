@@ -1,28 +1,31 @@
 #include <bits/stdc++.h>
-#define ll long long int
-#define all(a) begin(a), end(a)
-int oo = -1^1<<31;
 using namespace std;
 
-int main()
-{
+#define rep(i, a, b) for (int i = a; i < (b); ++i)
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef vector<int> vi;
+
+int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
     string inp; cin >> inp;
-    int run = 0, maxRun = 0;
-    char runChar = 'A';
-    for (char c : inp) {
-        if (c == runChar)
-            run++;
+    char lastchar = ' ';
+    ll longest = 0, current = 0;
+    rep(i, 0, inp.length()) {
+        if (inp[i] == lastchar) current++;
         else {
-            if (run > maxRun) maxRun = run;
-            run = 1;
-            runChar = c;
+            longest = max(longest, current);
+            current = 1;
         }
+        lastchar = inp[i];
     }
-    if (run > maxRun) maxRun = run;
-    cout << maxRun << "\n";
+    longest = max(longest, current);
 
-    return 0;
+    cout << longest << "\n";
+
+    return 0;    
 }

@@ -1,34 +1,25 @@
 #include <bits/stdc++.h>
-#define ll long long int
-#define all(a) begin(a), end(a)
-int oo = -1^1<<31;
 using namespace std;
 
-void solve() {
-    ll x, y; cin >> y >> x;
-    ll z = max(x, y);
-    ll z2 = (z-1)*(z-1), ans;
-    if (z&1) {
-        if (y == z)
-            ans = z2+x;
-        else
-            ans = z2+2*z-y;
-    } else {
-        if (x == z)
-            ans = z2+y;
-        else
-            ans = z2+2*z-x;
-    }
-    cout << ans << "\n";
+#define rep(i, a, b) for (int i = a; i < (b); ++i)
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef vector<int> vi;
+
+void solve(int t) {
+    ll y, x; cin >> y >> x;
+
+    
 }
 
-int main()
-{
+int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
     int t; cin >> t;
-    while(t--) solve();
+    rep(i, 0, t) solve(t);
 
-    return 0;
+    return 0;    
 }

@@ -12,14 +12,8 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    ll n; cin >> n;
-
-    while (n != 1) {
-        cout << n << " ";
-        if (n & 1) n = n*3 + 1;
-        else n /= 2;
-    }
-    cout << n << "\n";
+    int n, m; cin >> n >> m;
+    vector<vector<char>> map(n, vector<char>(m));
 
     return 0;    
 }
