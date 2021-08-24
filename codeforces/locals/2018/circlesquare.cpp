@@ -8,8 +8,6 @@ typedef long long ll;
 typedef pair<int, int> pii;
 typedef vector<int> vi;
 
-set<char> vowels;
-
 template <class T> int sgn(T x) { return (x > 0) - (x < 0); }
 template<class T>
 struct Point {
@@ -41,45 +39,38 @@ return os << "(" << p.x << "," << p.y << ")"; }
 
 typedef Point<double> P;
 #define arg(p, q) atan2(p.cross(q), p.dot(q))
-double circlePoly(P c, double r, vector<P> ps)
-{
-    auto tri = [&](P p, P q)
-    {
-        auto r2 = r * r / 2;
-        P d = q - p;
-        auto a = d.dot(p) / d.dist2(), b = (p.dist2() - r * r) / d.dist2();
-        auto det = a * a - b;
-        if (det <= 0)
-            return arg(p, q) * r2;
-        auto s = max(0., -a - sqrt(det)), t = min(1., -a + sqrt(det));
-        if (t < 0 || 1 <= s)
-            return arg(p, q) * r2;
-        P u = p + d * s, v = p + d * t;
-        return arg(p, u) * r2 + u.cross(v) / 2 + arg(v, q) * r2;
-    };
-    auto sum = 0.0;
-    rep(i, 0, sz(ps))
-        sum += tri(ps[i] - c, ps[(i + 1) % sz(ps)] - c);
-    return sum;
+double circlePoly(P c, double r, vector<P> ps) {
+auto tri = [&](P p, P q) {
+auto r2 = r * r / 2;
+P d = q - p;
+auto a = d.dot(p)/d.dist2(), b = (p.dist2()-r*r)/d.dist2();
+auto det = a * a - b;
+if (det <= 0) return arg(p, q) * r2;
+auto s = max(0., -a-sqrt(det)), t = min(1., -a+sqrt(det));
+if (t < 0 || 1 <= s) return arg(p, q) * r2;
+P u = p + d * s, v = p + d * t;
+return arg(p,u) * r2 + u.cross(v)/2 + arg(v,q) * r2;
+};
+auto sum = 0.0;
+rep(i,0,sz(ps))
+sum += tri(ps[i] - c, ps[(i + 1) % sz(ps)] - c);
+return sum;
 }
 
-void solve(int t)
-{
-    cout << "String #" << t + 1 << ": ";
-
-    string inp;
-    cin >> inp;
-}
-
-int main()
-{
+int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
+    
+    int cx, cy, r; cin >> cx >> cy >> r;
+    int sx, sy, s; cin >> sx >> sy >> s;
 
-    int n;
-    cin >> n;
-    for (int i = 0; i < n; i++)
-        solve(i);
+    vector<P> square;
+    square.push_back(P(sx, sy));
+    square.push_back(P(sx + s, sy));
+    square.push_back(P(sx + s, sy + s));
+    square.push_back(P(sx, sy + s));
 
-    return 0;
+    
+
+    return 0;    
 }
