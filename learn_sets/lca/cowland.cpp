@@ -26,7 +26,7 @@ struct RMQ {
 };
 
 template<class T>
-struct Tree {
+struct Tree { 
     static constexpr T unit = 0;
     T f(T a, T b) { return a ^ b; }
     vector<T> s; int n;
@@ -53,10 +53,10 @@ vector<pii> lcaVec;
 vector<ll> plusMinus;
 
 void traverse(int node, int parent, int depth) {
-    segLocs[node].first = plusMinus.size();
+    segLocs[node].first = sz(plusMinus);
     plusMinus.push_back(attractions[node]);
 
-    rmqLocs[node] = lcaVec.size();
+    rmqLocs[node] = sz(lcaVec);
     lcaVec.emplace_back(depth, node);
 
     for (auto child : adjList[node])
@@ -65,7 +65,7 @@ void traverse(int node, int parent, int depth) {
             lcaVec.emplace_back(depth, node);
         }
 
-    segLocs[node].second = plusMinus.size();
+    segLocs[node].second = sz(plusMinus);
     plusMinus.push_back(attractions[node]);
 }
 
@@ -86,8 +86,8 @@ int main() {
     }
 
     traverse(0, -1, 0);
-    Tree<ll> seg(plusMinus.size());
-    for (int i = 0; i < plusMinus.size(); i++)
+    Tree<ll> seg(sz(plusMinus));
+    for (int i = 0; i < sz(plusMinus); i++)
         seg.update(i, plusMinus[i]);
 
     RMQ<pii> rmq(lcaVec);
@@ -96,28 +96,27 @@ int main() {
         u--; v--;
         if (type == 1) {
             auto locs = segLocs[u];
-            int l = locs.first;
-            int r = locs.second;
-            seg.update(l, v);
-            seg.update(r, v);
+            int a = locs.first;
+            int b = locs.second;
+            seg.update(a, v+1);
+            seg.update(b, v+1);
+            attractions[u] = v+1;
         } else {
             auto uLoc = segLocs[u];
             auto vLoc = segLocs[v];
 
-            int l = uLoc.first;
-            int r = vLoc.first;
+            int rmqLo = min(rmqLocs[u], rmqLocs[v]);
+            int rmqHi = max(rmqLocs[u], rmqLocs[v]);
 
-            int lo = min(l, r);
-            int hi = max(l, r);
+            int a = uLoc.first;
+            int b = vLoc.first;
 
-            // check to see if u and v are different trees
-            int lca = rmq.query(lo, hi).second;
-
-            bool uParent = lca == u;
-            bool vParent = lca == v;
+			int lca = rmq.query(rmqLo, rmqHi).second;
             
-            ll dist = seg.query(u, v+1);
-            if (uParent || vParent) dist ^= uParent ? attractions[u] : attractions[v];
+            ll dist = 0;
+            dist ^= seg.query(0, a+1);
+            dist ^= seg.query(0, b+1);
+            dist ^= attractions[lca];
 
             cout << dist << endl;
         }
