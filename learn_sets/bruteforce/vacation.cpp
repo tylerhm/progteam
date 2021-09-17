@@ -1,76 +1,88 @@
 #include <bits/stdc++.h>
-#define ll long long int
-#define sort(a) sort(a.begin(), a.end());
-#define fill(a, b) fill(a.begin(), a.end(), b);
-int oo = -1^1<<31;
 using namespace std;
 
-vector<pair<int, int>> rideLocs;
-vector<bool> visited, completed;
-vector<vector<double>> dists;
+#define rep(i, a, b) for (int i = a; i < (b); ++i)
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef vector<int> vi;
+
+double dist[15][15];
+bool blocked[15][15];
+bool visited[15];
+int r;
+
 double minDist;
 
-double pairDist(pair<int, int>& p1, pair<int, int>& p2) {
-    return sqrt((p1.first-p2.first)*(p1.first-p2.first) + (p1.second-p2.second)*(p1.second-p2.second));
+double pDist(pii a, pii b) {
+    ll dx = abs(a.first - b.first);
+    ll dy = abs(a.second - b.second);
+    return sqrt(dx*dx + dy*dy);
 }
 
-// backtracking bruteforce
-double dist(int k, int c)
-{
-    // not possible
-    if (visited[k]) return oo;
-    // done
-    if (c == visited.size()) return 0;
-    visited[k] = true;
-    double localMin = oo;
-    for (int i = 0; i < dists.size(); i++)
-    {
-        if (dists[k][i] != -oo); // can't take invalid paths
-        {
-            double d = dist(i, c+1);
-            d += dists[k][i];
-            if (d < localMin) localMin = d;
+void go(int u, int found, double d) {
+    if (found == r) {
+        minDist = min(minDist, d);
+        return;
+    }
+
+    rep(v, 1, r+1) {
+        if (!visited[v] && !blocked[u][v]) {
+            visited[v] = true;
+            go(v, found + 1, d + dist[u][v]);
+            visited[v] = false;
         }
     }
-    visited[k] = false;
-    return localMin;
 }
 
-int main()
-{
-    int n_cases; cin >> n_cases;
-    int iter = 1;
-    while (n_cases--)
-    {
-        int r, b; cin >> r >> b;
-        rideLocs = vector<pair<int, int>>(r);
-        dists = vector<vector<double>>(r, vector<double>(r));
-        visited = vector<bool>(r, false);
-        completed = vector<bool>(r, false);
-        for (int i = 0; i < r; i++) {
-            int x, y; cin >> x >> y;
-            rideLocs.push_back(make_pair(x, y));
+void solve(int t) {
+    cout << "Vacation #" << t << ":" << endl;
 
-            // preprocess distances
-            for (int j = 0; j <= i; j++) 
-            {
-                double ld = pairDist(rideLocs[i], rideLocs[j]);
-                dists[i][j] = ld;
-                dists[j][i] = ld;
-            }
-        }
-        for (int i = 0; i < b; i++) {
-            int ii, j; cin >> ii >> j;
-            dists[ii-1][j-1] = -oo;
-            dists[j-1][ii-1] = -oo;
-        }
-        double minDist = dist(0, 1);
-        cout << "Vacation #" << iter++ << "\n";
-        if (minDist != oo)
-            printf("Jimmy can finish all of the rides in %.3lf seconds.", minDist + r*120);
-        else
-            printf("Jimmy should plan this vacation on a different day.");
-        cout << "\n\n";
+    int b; cin >> r >> b;
+    vector<pii> rides(r);
+    for (auto &[x, y] : rides)
+        cin >> x >> y;
+
+    rides.insert(rides.begin(), {0, 0});
+
+    rep(i,0,sz(rides))
+        rep(j,0,sz(rides))
+            if (i != j)
+                dist[i][j] = pDist(rides[i], rides[j]);
+    
+    rep(i,0,15)
+        rep(j,0,15)
+            blocked[i][j] = false;
+    rep(i,0,b) {
+        int u, v; cin >> u >> v;
+        blocked[u][v] = true;
+        blocked[v][u] = true;
     }
-    return 0;
+
+    rep(i,0,sz(rides)) visited[i] = false;
+    visited[0] = true;
+
+    minDist = DBL_MAX;
+    go(0, 0, 0.0);
+
+    if (minDist == DBL_MAX) {
+        cout << "Jimmy should plan this vacation a different day." << endl;
+    } else {
+        minDist += 120 * r;
+        cout << "Jimmy can finish all of the rides in " << minDist << " seconds." << endl;
+    }
+
+    cout << endl;
+}
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    cin.exceptions(cin.failbit);
+    cout << fixed << setprecision(3);
+
+    int t; cin >> t;
+    rep(tt, 0, t) solve(tt+1);
+
+    return 0;    
 }
