@@ -29,11 +29,11 @@ class most {
 				bob.nextInt() - 1,
 				bob.nextInt()
 			);
-			
+
 		HashMap<Pair, Integer> connections = new HashMap<Pair, Integer>();
 		adjList = new ArrayList<ArrayList<Pair>>();
 		for (int i = 0; i < n; i++) adjList.add(new ArrayList<Pair>());
-		
+
 		boolean[] inMST = new boolean[m];
 		DisjointSet dsu = new DisjointSet(n);
 		Arrays.sort(edges);
@@ -54,7 +54,7 @@ class most {
 		// It's already odd, yay! n_n
 		if (mst % 2 == 1)
 			return mst;
-		
+
 		// Sigh... We need to make it odd, let's do the following:
 		//	for each edge (u, v) NOT in the MST
 		//		find maximum edge on path from (u, v) of opposite parity to add
@@ -107,7 +107,7 @@ class most {
 		long MOST = Long.MAX_VALUE;
 		for (int i = 0; i < m; i++) {
 			if (inMST[i]) continue;
-			
+
 			Edge e = edges[i];
 
 			// If our edge is odd, then we want to remove the max even
@@ -137,7 +137,7 @@ class most {
 		int depthL = lcaPairs.get(lcaLocs[l]).a;
 		int depthU = lcaPairs.get(lcaLocs[u]).a - depthL;
 		int depthV = lcaPairs.get(lcaLocs[v]).a - depthL;
-		
+
 		int mx = -1;
 		for (int k = LOG - 1; k >= 0; k--) {
 			int mask = 1 << k;
@@ -170,7 +170,7 @@ class most {
 				lcaPairs.add(id);
 			}
 	}
-	
+
 	static class Pair implements Comparable<Pair> {
 		int a, b;
 		public Pair(int _a, int _b) {
@@ -245,30 +245,6 @@ class most {
 		}
 	}
 
-	static class RMQ {
-		ArrayList<ArrayList<Pair>> jmp = new ArrayList<ArrayList<Pair>>();
-		public RMQ(ArrayList<Pair> V) {
-			jmp.add(V);
-			for (int pw = 1, k = 1; pw * 2 <= V.size(); pw *= 2, ++k) {
-				jmp.add(new ArrayList<Pair>());
-				for (int j = 0; j < jmp.get(k).size(); ++j) {
-					jmp.get(k).set(j, Pair.minPair(
-						jmp.get(k - 1).get(j),
-						jmp.get(k - 1).get(j + pw)
-					));
-				}
-			}
-		}
-		public Pair query(int a, int b) {
-			assert(a < b);
-			if (a == b) return jmp.get(0).get(a);
-			int dep = 31 - Integer.numberOfLeadingZeros(b - a);
-			return Pair.minPair(
-				jmp.get(dep).get(a),
-				jmp.get(dep).get(b - (1 << dep))
-			);
-		}
-	}
 	// static class RMQ {
 	// 	Pair[] vs;
 	// 	Pair[][] lift;
