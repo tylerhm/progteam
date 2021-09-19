@@ -70,7 +70,9 @@ class most {
 		parents = new int[n];
 		getLcaPairs(adjList, 0, 0, 0);
 
-		rmq = new RMQ(lcaPairs);
+		Pair[] lcaPairsAsArray = new Pair[lcaPairs.size()];
+		for (int i = 0; i < lcaPairs.size(); i++) lcaPairsAsArray[i] = lcaPairs.get(i);
+		rmq = new RMQ(lcaPairsAsArray);
 
 		// Build binary lifting parents and maxs
 		LOG = 0;
@@ -128,8 +130,7 @@ class most {
 	static int lca(int u, int v) {
 		int lo = lcaLocs[u];
 		int hi = lcaLocs[v];
-		System.out.println(lo + " " + hi);
-		return rmq.query(lo, hi).b;
+		return rmq.query(Math.min(lo, hi), Math.max(lo, hi)).b;
 	}
 
 	static int maxEdgeOnPath(int u, int v, int[][] mxLiftParity) {
@@ -245,29 +246,29 @@ class most {
 		}
 	}
 
-	// static class RMQ {
-	// 	Pair[] vs;
-	// 	Pair[][] lift;
-	// 	public RMQ(Pair[] vs) {
-	// 		this.vs = vs;
-	// 		int n = vs.length;
-	// 		int maxlog = Integer.numberOfTrailingZeros(Integer.highestOneBit(n)) + 2;
-	// 		lift = new Pair[maxlog][n];
-	// 		for (int i = 0; i < n; i++)
-	// 			lift[0][i] = vs[i];
-	// 		int lastRange = 1;
-	// 		for (int lg = 1; lg < maxlog; lg++) {
-	// 			for (int i = 0; i < n; i++) {
-	// 				lift[lg][i] = Pair.minPair(lift[lg - 1][i], lift[lg - 1][Math.min(i + lastRange, n - 1)]);
-	// 			}
-	// 			lastRange *= 2;
-	// 		}
-	// 	}
-	// 	public Pair query(int low, int hi) {
-	// 		int range = hi - low + 1;
-	// 		int exp = Integer.highestOneBit(range);
-	// 		int lg = Integer.numberOfTrailingZeros(exp);
-	// 		return Pair.minPair(lift[lg][low], lift[lg][hi - exp + 1]);
-	// 	}
-	// }
+	static class RMQ {
+		Pair[] vs;
+		Pair[][] lift;
+		public RMQ(Pair[] vs) {
+			this.vs = vs;
+			int n = vs.length;
+			int maxlog = Integer.numberOfTrailingZeros(Integer.highestOneBit(n)) + 2;
+			lift = new Pair[maxlog][n];
+			for (int i = 0; i < n; i++)
+				lift[0][i] = vs[i];
+			int lastRange = 1;
+			for (int lg = 1; lg < maxlog; lg++) {
+				for (int i = 0; i < n; i++) {
+					lift[lg][i] = Pair.minPair(lift[lg - 1][i], lift[lg - 1][Math.min(i + lastRange, n - 1)]);
+				}
+				lastRange *= 2;
+			}
+		}
+		public Pair query(int low, int hi) {
+			int range = hi - low + 1;
+			int exp = Integer.highestOneBit(range);
+			int lg = Integer.numberOfTrailingZeros(exp);
+			return Pair.minPair(lift[lg][low], lift[lg][hi - exp + 1]);
+		}
+	}
 }
