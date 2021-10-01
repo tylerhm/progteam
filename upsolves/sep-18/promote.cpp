@@ -39,6 +39,17 @@ struct stree {
     }
 };
 
+vi pre, post;
+int order;
+vector<vi> adjList;
+
+void dfs(int loc) {
+    pre[loc] = ++order;
+    for (int c : adjList[loc])
+        dfs(c);
+    post[loc] = order;
+};
+
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
@@ -48,12 +59,7 @@ int main() {
     for (auto &x : prof) cin >> x;
     for (int i = 1; i < n; i++) cin >> par[i], par[i]--;
 
-    vector<pii> revOrder;
-    for (int i = 0; i < n; i++)
-        revOrder.emplace_back(-prof[i], i);
-    sort(all(revOrder));
-
-    vector<vi> adjList(n);
+    adjList = vector<vi>(n);
     int root;
     for (int i = 0; i < n; i++) {
         if (par[i] == -1) {
@@ -63,29 +69,27 @@ int main() {
         adjList[par[i]].push_back(i);
     }
 
-    vector<int> pre(n), post(n);
-    int curPre = -1, curPost = -1;
-    function<void(int)> dfs = [&](int loc) {
-        curPre++, curPost++;
-        pre[loc] = curPre;
-        for (int c : adjList[loc])
-            dfs(c);
-        post[loc] = curPost;
-    };
+    pre = post = vi(n);
+    order = -1;
+    dfs(root);
+
+    vector<pii> revOrder;
+    for (int i = 0; i < n; i++)
+        revOrder.emplace_back(-prof[i], i);
+    sort(all(revOrder));
 
     vector<pii> ans;
-
     stree seg(0, n);
     for (int i = 0; i < n; i++) {
         int nextInsertion = revOrder[i].second;
         int greaterThan = seg.query(pre[nextInsertion], post[nextInsertion]);
         ans.emplace_back(nextInsertion, greaterThan);
-        seg.set(nextInsertion, 1);
+        seg.set(pre[nextInsertion], 1);
     }
 
     sort(all(ans));
-
-    for (auto i : ans) cout << i.second  << endl;
+    for (auto i : ans)
+        cout << i.second << endl;
 
     return 0;
 }
