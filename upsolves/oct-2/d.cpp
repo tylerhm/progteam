@@ -48,15 +48,104 @@ vector<H> getHashes(string& str, int length) {
 
 H hashString(string& s){H h{}; for(char c:s) h=h*C+c;return h;}
 
+vector<H> pwOfC;
+void precompPws(int len) {
+	H c = C;
+	pwOfC.resize(len + 1);
+	for (int pw = 1; pw <= len; pw++) {
+		pwOfC[pw] = c;
+		c = c * C;	
+	}
+}
+
+vector<H> rotationHashes(string& s) {
+	vector<H> hashes;
+	HashInterval h(s);
+	hashes.push_back(h.hashInterval(0, sz(s)));
+	for (int i = 1; i < sz(s); i++) {
+		H left = h.hashInterval(0, i);
+		H right = h.hashInterval(i, sz(s));
+		right = right * pwOfC[i];
+		hashes.push_back(left + right);
+	}
+	return hashes;
+}
+
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
     int n, m, k; cin >> n >> m >> k;
-    vector<string> puzzle(m);
+    vector<string> puzzle(n);
     for (auto &x : puzzle) cin >> x;
 
-    
+    // get the cycle length that we need
+	int cycleLength = min(k, lcm(n, m));
+	precompPws(cycleLength);
+	
+	// get all possible hashes
+	map<H, int> hashes;
+
+	// horizontal
+	for (int i = 0; i < n; i++) {
+		string hori = "";
+		for (int j = 0; j < cycleLength; j++)
+			hori += puzzle[i][j % m];
+		for (H h : rotationHashes(hori))
+			hashes[h]++;
+		reverse(all(hori));
+		for (H h : rotationHashes(hori))
+			hashes[h]++;
+	}
+
+	// vertical
+	for (int i = 0; i < m; i++) {
+		string vert = "";
+		for (int j = 0; j < cycleLength; j++)
+			vert += puzzle[j % n][i];
+		for (H h : rotationHashes(vert))
+			hashes[h]++;
+		reverse(all(vert));
+		for (H h : rotationHashes(vert))
+			hashes[h]++;
+	}
+
+	// down-right
+	for (int i = 0; i < m; i++) {
+		string downRight = "";
+		for (int j = 0; j < cycleLength; j++)
+			downRight += puzzle[j % n][(i + j) % m];
+		for (H h : rotationHashes(downRight))
+			hashes[h]++;
+		reverse(all(downRight));
+		for (H h : rotationHashes(downRight))
+			hashes[h]++;
+	}
+
+	// down-left
+	for (int i = 0; i < m; i++) {
+		string downLeft = "";
+		for (int j = 0; j < cycleLength; j++)
+			downLeft += puzzle[j % n][(((i - j) % m) + m) % m];
+		for (H h : rotationHashes(downLeft))
+			hashes[h]++;
+		reverse(all(downLeft));
+		for (H h : rotationHashes(downLeft))
+			hashes[h]++;
+	}
+
+	ll denom = 0;
+	ll num = 0;
+	for (auto &[_, cnt] : hashes) {
+		denom += cnt;
+		num += cnt * cnt;
+		cout << cnt << endl;
+	}
+	denom *= denom;
+
+	ll actualDenom = __gcd(num, denom);
+	cout << num << ' ' << denom << ' ' << actualDenom << endl;
+	cout << (num / actualDenom) << '/' << (denom / actualDenom) << endl;
 
     return 0;
 }
