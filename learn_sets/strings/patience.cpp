@@ -65,43 +65,66 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-	srand(time(NULL));
-	vi s;
-	for (int i = 0; i < 10; i++)
-		s.push_back(rand() % 10);
-	vi suff = suffArray(s);
-
-	for (int i : s)
-		cout << i << ' ';
-	cout << endl;
-	for (int i : suff)
-		cout << i << ' ';
-	cout << endl;
-
-	return 0;
-
 	int n; cin >> n;
-	map<int, int> comp;
 	vector<vi> seq;
+	vi vals;
 	for (int i = 0; i < n; i++) {
 		int l; cin >> l;
 		seq.push_back(vi(l));
 		for (int j = 0; j < l; j++) {
-			int val; cin >> val;
-			if (comp[val] == 0)
-				comp[val] = sz(comp);
-			seq[i][j] = comp[val];
+			cin >> seq[i][j];
+			vals.push_back(seq[i][j]);
 		}
 	}
 
-	vi suffVec;
+	map<int, int> comp;
+	sort(all(vals));
+	for (int i = 0; i < sz(vals); i++)
+		comp[vals[i]] = i;
+
+	vector<vi> og = seq;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < sz(seq[i]); j++)
+			seq[i][j] = comp[seq[i][j]];
+
+	vi conc;
 	for (int i = 0; i < n; i++) {
 		for (int val : seq[i])
-			suffVec.push_back(val);
-		suffVec.push_back(sz(comp) + 1);
+			conc.push_back(val);
+		conc.push_back(sz(comp) + 1);
 	}
-	suffVec.erase(suffVec.end() - 1);
+	conc.erase(conc.end() - 1);
 
+	vi suff = suffArray(conc);
+	vi inv(sz(suff));
+	for (int i = 0; i < sz(suff); i++)
+		inv[suff[i]] = i;
+
+	// construct an array of seq[i][j] to suff ordering
+	vector<vi> seqSuff = seq;
+	int idx = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < sz(seq[i]); j++, idx++)
+			seqSuff[i][j] = inv[idx];
+		idx++;
+	}
+
+	vi ind(n, 0);
+	vi res;
+	while (true) {
+		int bestIdx = -1;
+		for (int i = 0; i < n; i++) {
+			if (ind[i] == sz(seqSuff[i])) continue;
+			if (bestIdx == -1 || seqSuff[bestIdx][ind[bestIdx]] > seqSuff[i][ind[i]])
+				bestIdx = i;
+		}
+		if (bestIdx == -1) break;
+		res.push_back(og[bestIdx][ind[bestIdx]]);
+		ind[bestIdx]++;
+	}
+
+	for (int i : res) cout << i << ' ';
+	cout << endl;
 
     return 0;
 }
