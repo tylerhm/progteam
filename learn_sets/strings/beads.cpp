@@ -12,6 +12,10 @@ void solve(int t) {
     cout << "Case #" << t << ": ";
 
     string one, two; cin >> one >> two;
+	if (sz(one) != sz(two)) {
+		cout << "NO" << endl;
+		return;
+	}
 
     string doubled = one + one;
     string reversed = doubled;
@@ -31,5 +35,5 @@ int main() {
     for (int i = 1; i <= n; i++)
         solve(i);
 
-    return 0;    
+    return 0;
 }

@@ -17,7 +17,7 @@ void precomp() {
                 notPrime[j] = 1;
         }
 }
-// hello this is a comment
+
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);

@@ -26,7 +26,7 @@ struct RMQ {
 };
 
 template<class T>
-struct Tree { 
+struct Tree {
     static constexpr T unit = 0;
     T f(T a, T b) { return a ^ b; }
     vector<T> s; int n;
@@ -112,7 +112,7 @@ int main() {
             int b = vLoc.first;
 
 			int lca = rmq.query(rmqLo, rmqHi).second;
-            
+
             ll dist = 0;
             dist ^= seg.query(0, a+1);
             dist ^= seg.query(0, b+1);
@@ -122,5 +122,5 @@ int main() {
         }
     }
 
-    return 0;    
+    return 0;
 }

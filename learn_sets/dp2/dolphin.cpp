@@ -41,7 +41,7 @@ int main() {
     cin.exceptions(cin.failbit);
 
     int t; cin >> t;
-    rep(tt, 0, t) solve(t);
+    rep(tt, 0, t) solve(tt);
 
     return 0;
 }
