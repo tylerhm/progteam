@@ -6,26 +6,27 @@ using namespace std;
 #define sz(x) (int)(x).size()
 typedef long long ll;
 typedef pair<int, int> pii;
+typedef pair<ll, int> pli;
 typedef vector<int> vi;
 
-vi sortCyclicShifts(vi const& v) {
-	int n = sz(v);
-	vi p(n), c(n), cnt(n + 1, 0);
+vi sortShifts(vi const& s) {
+    int n = sz(s);
+	vi p(n), c(n), cnt(n, 0);
 	for (int i = 0; i < n; i++)
-		cnt[v[i]]++;
-	for (int i = 0; i <= n; i++)
+		cnt[s[i]]++;
+	for (int i = 1; i < n; i++)
 		cnt[i] += cnt[i - 1];
 	for (int i = 0; i < n; i++)
-		p[--cnt[v[i]]] = i;
+		p[--cnt[s[i]]] = i;
 	c[p[0]] = 0;
 	int classes = 1;
 	for (int i = 1; i < n; i++) {
-		if (v[p[i]] != v[p[i - 1]])
+		if (s[p[i]] != s[p[i - 1]])
 			classes++;
 		c[p[i]] = classes - 1;
 	}
 
-    vector<int> pn(n), cn(n);
+	vector<int> pn(n), cn(n);
     for (int h = 0; (1 << h) < n; ++h) {
         for (int i = 0; i < n; i++) {
             pn[i] = p[i] - (1 << h);
@@ -53,16 +54,31 @@ vi sortCyclicShifts(vi const& v) {
     return p;
 }
 
-vi suffixArray(vi v) {
+vi suffArray(vi v) {
 	v.push_back(0);
-	vi sortedShifts = sortCyclicShifts(v);
-	sortedShifts.erase(sortedShifts.begin());
-	return sortedShifts;
+	vi sorted = sortShifts(v);
+	sorted.erase(begin(sorted));
+	return sorted;
 }
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
+
+	srand(time(NULL));
+	vi s;
+	for (int i = 0; i < 10; i++)
+		s.push_back(rand() % 10);
+	vi suff = suffArray(s);
+
+	for (int i : s)
+		cout << i << ' ';
+	cout << endl;
+	for (int i : suff)
+		cout << i << ' ';
+	cout << endl;
+
+	return 0;
 
 	int n; cin >> n;
 	map<int, int> comp;
@@ -86,23 +102,6 @@ int main() {
 	}
 	suffVec.erase(suffVec.end() - 1);
 
-	suffVec.clear();
-	for (int i = 0; i < 10; i++) {
-		suffVec.push_back(rand() % 10);
-	}
-	vi order = suffixArray(suffVec);
-	vector<pair<int, vi>> sorted;
-	for (int i = 0; i < sz(order); i++) {
-		vi suff; for (int j = i; j < sz(suffVec); j++) suff.push_back(suffVec[j]);
-		sorted.emplace_back(order[i], suff);
-	}
-	sort(all(sorted));
-
-	for (auto [_, suff] : sorted) {
-		for (int i : suff)
-			cout << i << ' ';
-		cout << endl;
-	}
 
     return 0;
 }
