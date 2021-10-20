@@ -9,57 +9,29 @@ typedef pair<int, int> pii;
 typedef pair<ll, int> pli;
 typedef vector<int> vi;
 
-vi sortShifts(vi const& s) {
-    int n = sz(s);
-	vi p(n), c(n), cnt(n, 0);
-	for (int i = 0; i < n; i++)
-		cnt[s[i]]++;
-	for (int i = 1; i < n; i++)
-		cnt[i] += cnt[i - 1];
-	for (int i = 0; i < n; i++)
-		p[--cnt[s[i]]] = i;
-	c[p[0]] = 0;
-	int classes = 1;
-	for (int i = 1; i < n; i++) {
-		if (s[p[i]] != s[p[i - 1]])
-			classes++;
-		c[p[i]] = classes - 1;
+struct SuffixArray {
+	vi sa, lcp;
+	SuffixArray(vi& s, int lim=256) { // or basic_string<int>
+		int n = sz(s) + 1, k = 0, a, b;
+		vi x(all(s)+1), y(n), ws(max(n, lim)), rank(n);
+		sa = lcp = y, iota(all(sa), 0);
+		for (int j = 0, p = 0; p < n; j = max(1, j * 2), lim = p) {
+			p = j, iota(all(y), n - j);
+			rep(i,0,n) if (sa[i] >= j) y[p++] = sa[i] - j;
+			fill(all(ws), 0);
+			rep(i,0,n) ws[x[i]]++;
+			rep(i,1,lim) ws[i] += ws[i - 1];
+			for (int i = n; i--;) sa[--ws[x[y[i]]]] = y[i];
+			swap(x, y), p = 1, x[sa[0]] = 0;
+			rep(i,1,n) a = sa[i - 1], b = sa[i], x[b] =
+				(y[a] == y[b] && y[a + j] == y[b + j]) ? p - 1 : p++;
+		}
+		rep(i,1,n) rank[sa[i]] = i;
+		for (int i = 0, j; i < n - 1; lcp[rank[i++]] = k)
+			for (k && k--, j = sa[rank[i] - 1];
+					s[i + k] == s[j + k]; k++);
 	}
-
-	vector<int> pn(n), cn(n);
-    for (int h = 0; (1 << h) < n; ++h) {
-        for (int i = 0; i < n; i++) {
-            pn[i] = p[i] - (1 << h);
-            if (pn[i] < 0)
-                pn[i] += n;
-        }
-        fill(cnt.begin(), cnt.begin() + classes, 0);
-        for (int i = 0; i < n; i++)
-            cnt[c[pn[i]]]++;
-        for (int i = 1; i < classes; i++)
-            cnt[i] += cnt[i-1];
-        for (int i = n-1; i >= 0; i--)
-            p[--cnt[c[pn[i]]]] = pn[i];
-        cn[p[0]] = 0;
-        classes = 1;
-        for (int i = 1; i < n; i++) {
-            pair<int, int> cur = {c[p[i]], c[(p[i] + (1 << h)) % n]};
-            pair<int, int> prev = {c[p[i-1]], c[(p[i-1] + (1 << h)) % n]};
-            if (cur != prev)
-                ++classes;
-            cn[p[i]] = classes - 1;
-        }
-        c.swap(cn);
-    }
-    return p;
-}
-
-vi suffArray(vi v) {
-	v.push_back(0);
-	vi sorted = sortShifts(v);
-	sorted.erase(begin(sorted));
-	return sorted;
-}
+};
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);
@@ -77,28 +49,25 @@ int main() {
 		}
 	}
 
-	map<int, int> comp;
 	sort(all(vals));
+	map<int, int> comp;
+	int mag = 0;
 	for (int i = 0; i < sz(vals); i++)
-		comp[vals[i]] = i;
-
-	vector<vi> og = seq;
-	for (int i = 0; i < n; i++)
-		for (int j = 0; j < sz(seq[i]); j++)
-			seq[i][j] = comp[seq[i][j]];
+		if (!comp.count(vals[i]))
+			comp[vals[i]] = mag++;
 
 	vi conc;
 	for (int i = 0; i < n; i++) {
 		for (int val : seq[i])
-			conc.push_back(val);
-		conc.push_back(sz(comp) + 1);
+			conc.push_back(comp[val]);
+		conc.push_back(mag);
 	}
 	conc.erase(conc.end() - 1);
 
-	vi suff = suffArray(conc);
-	vi inv(sz(suff));
-	for (int i = 0; i < sz(suff); i++)
-		inv[suff[i]] = i;
+	SuffixArray s(conc, mag + 1);
+	map<int, int> inv;
+	for (int i = 0; i < sz(s.sa); i++)
+		inv[s.sa[i]] = i;
 
 	// construct an array of seq[i][j] to suff ordering
 	vector<vi> seqSuff = seq;
@@ -109,7 +78,7 @@ int main() {
 		idx++;
 	}
 
-	vi ind(n, 0);
+	vi ind(n);
 	vi res;
 	while (true) {
 		int bestIdx = -1;
@@ -119,12 +88,9 @@ int main() {
 				bestIdx = i;
 		}
 		if (bestIdx == -1) break;
-		res.push_back(og[bestIdx][ind[bestIdx]]);
+		cout << seq[bestIdx][ind[bestIdx]] << ' ';
 		ind[bestIdx]++;
 	}
-
-	for (int i : res) cout << i << ' ';
-	cout << endl;
 
     return 0;
 }
