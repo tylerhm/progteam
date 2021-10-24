@@ -68,7 +68,7 @@ int main()
         cin >> letters;
         for (char c : letters)
             reds[c - 'a']++;
-        
+
         // connect sources and sinks
         for (int i = 0; i < 26; i++)
         {
@@ -85,7 +85,7 @@ int main()
         cout << g.ff() << endl;
     }
 
-    
+
 
     return 0;
 }

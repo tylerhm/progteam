@@ -9,6 +9,10 @@ typedef pair<int, int> pii;
 typedef pair<ll, int> pli;
 typedef vector<int> vi;
 
+map<bool, int> thing;
+
+
+
 struct SuffixArray {
 	vi sa, lcp;
 	SuffixArray(vi& s, int lim=256) { // or basic_string<int>
@@ -36,6 +40,8 @@ struct SuffixArray {
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
+
+	fill(all(thing), 1);
 
 	int n; cin >> n;
 	vector<vi> seq;
