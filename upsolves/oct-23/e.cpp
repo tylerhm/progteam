@@ -24,6 +24,34 @@ vector<pii> compress(vector<pii> arr) {
 	return comp;
 }
 
+ll shortest(vector<pii> forwards, vector<pii> backwards) {
+	vector<ll> prefixMiddleDist(sz(backwards) + 1);
+	for (int i = 0; i < sz(backwards); i++)
+		prefixMiddleDist[i + 1] =
+			prefixMiddleDist[i] + 2*(backwards[i].second - backwards[i].first);
+
+	ll forwardsDist = forwards.back().second - forwards[0].first;
+	ll frontChunk = abs(forwards[0].first - backwards[0].first);
+	ll backChunk = abs(forwards.back().second - backwards.back().second);
+	ll bestDist = LONG_MAX;
+	for (int s = 0; s < sz(backwards); s++) {
+		for (int t = 0; t <= sz(backwards) - s; t++) {
+			if (t > 0 && backwards[sz(backwards) - t].first > forwards.back().second) continue;
+			ll extraFirst = s == 0 ? 0 :
+				frontChunk + (backwards[s - 1].second - backwards[0].first);
+			ll extraBetween =
+				prefixMiddleDist[sz(backwards) - t] -
+				prefixMiddleDist[s];
+			ll extraLast = t == 0 ? 0 :
+				backChunk + (backwards.back().second - backwards[sz(backwards) - t].first);
+
+			bestDist = min(bestDist, forwardsDist + extraFirst + extraBetween + extraLast);
+		}
+	}
+
+	return bestDist;
+}
+
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	cin.exceptions(cin.failbit);
@@ -51,28 +79,12 @@ int main() {
 		return 0;
 	}
 
-	vector<ll> prefixMiddleDist(sz(backwards) + 1);
-	for (int i = 0; i < sz(backwards); i++)
-		prefixMiddleDist[i + 1] =
-			prefixMiddleDist[i] + 2*(backwards[i].second - backwards[i].first);
+	ll normal = shortest(forwards, backwards);
+	for (auto &[x, y] : forwards) x = -x, y = -y;
+	for (auto &[x, y] : backwards) x = -x, y = -y;
+	ll reversed = -shortest(backwards, forwards);
 
-	ll forwardsDist = forwards.back().second - forwards[0].first;
-	ll frontChunk = abs(forwards[0].first - backwards[0].first);
-	ll backChunk = abs(forwards.back().second - backwards.back().second);
-	ll bestDist = INT_MAX;
-	for (int s = 0; s < sz(backwards); s++) {
-		for (int t = 0; t <= sz(backwards) - s; t++) {
-			ll extraFirst = s == 0 ? 0 :
-				frontChunk + (backwards[s - 1].second - backwards[0].first);
-			ll extraBetween =
-				prefixMiddleDist[sz(backwards) - t] -
-				prefixMiddleDist[s];
-			ll extraLast = t == 0 ? 0 :
-				backChunk + (backwards.back().second - backwards[sz(backwards) - t].first);
-		}
-	}
-
-	cout << bestDist << nl;
+	cout << min(normal, reversed) << endl;
 
 	return 0;
 }
