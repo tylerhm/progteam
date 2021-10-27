@@ -16,14 +16,13 @@ int main() {
 	int n, m; cin >> n >> m;
 	vector<vector<pii>> adjList;
 	set<pii> mst;
-	map<int, int> nodeToMst;
 
 	vector<pii> unknown;
 	for (int i = 0; i < m; i++) {
 		int a, b; cin >> a >> b;
 		string ls; cin >> ls;
 		int c; cin >> c;
-		if (c) mst.emplace(a, b);
+		if (c) mst.emplace(a, b), mst.emplace(b, a);
 
 		int l = -1;
 		if (ls == "?") unknown.emplace_back(a, b);
@@ -38,7 +37,14 @@ int main() {
 			int a = p.first;
 			int b = p.second;
 
-
+			int maxEdge = -1;
+			for (auto [v, l] : adjList[a])
+				if (mst.count({a, v}))
+					maxEdge = max(maxEdge, l);
+			for (auto [v, l] : adjList[b])
+				if (mst.count({b, v}))
+					maxEdge = max(maxEdge, l);
+			cout << maxEdge << nl;
 		}
 	}
 
