@@ -34,7 +34,8 @@ ll shortest(vector<pii> forwards, vector<pii> backwards) {
 	ll frontChunk = abs(forwards[0].first - backwards[0].first);
 	ll backChunk = abs(forwards.back().second - backwards.back().second);
 	ll bestDist = LONG_MAX;
-	for (int s = 0; s < sz(backwards); s++) {
+	cout << sz(backwards) << endl;
+	for (int s = 0; s <= sz(backwards); s++) {
 		for (int t = 0; t <= sz(backwards) - s; t++) {
 			if (t > 0 && backwards[sz(backwards) - t].first > forwards.back().second) continue;
 			ll extraFirst = s == 0 ? 0 :
@@ -52,14 +53,26 @@ ll shortest(vector<pii> forwards, vector<pii> backwards) {
 	return bestDist;
 }
 
+vector<pii> buffer(vector<pii>& arr, int minX, int maxX) {
+	vector<pii> buffered;
+	buffered.emplace_back(minX, minX);
+	for (auto p : arr) buffered.push_back(p);
+	buffered.emplace_back(maxX, maxX);
+	return buffered;
+}
+
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	cin.exceptions(cin.failbit);
 
 	int l, n; cin >> l >> n;
+	int minX = INT_MAX, maxX = INT_MIN;
 	vector<pii> forwards, backwards;
 	for (int i = 0; i < n; i++) {
 		int x, y; cin >> x >> y;
+		minX = min(minX, min(x, y));
+		maxX = max(maxX, max(x, y));
+
 		if (x < y) forwards.emplace_back(x, y);
 		else backwards.emplace_back(y, x);
 	}
@@ -79,10 +92,8 @@ int main() {
 		return 0;
 	}
 
-	ll normal = shortest(forwards, backwards);
-	for (auto &[x, y] : forwards) x = -x, y = -y;
-	for (auto &[x, y] : backwards) x = -x, y = -y;
-	ll reversed = -shortest(backwards, forwards);
+	ll normal = shortest(buffer(forwards, minX, maxX), backwards);
+	ll reversed = shortest(buffer(backwards, minX, maxX), forwards);
 
 	cout << min(normal, reversed) << endl;
 
