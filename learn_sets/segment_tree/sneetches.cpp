@@ -10,7 +10,7 @@ typedef pair<int, int> pii;
 typedef vector<int> vi;
 
 struct info {
-	vi val = {1, 0};
+	int val[2] = {1, 0};
 	int lazy = 0;
 	int leftType = 0, rightType = 0;
 	int leftRun = 1, rightRun = 1;
@@ -26,56 +26,51 @@ struct seg {
 		if (lo != hi) {
 			left = new seg(lo, mid, config);
 			right = new seg(mid + 1, hi, config);
-			meta = merge(left->meta, right->meta);
+			merge();
 		} else {
 			meta.lazy = config[lo] == 'S';
 		}
 	}
 
+	void print() {
+		cout << meta.val[!meta.lazy] << ' ' << meta.val[meta.lazy] << nl;
+	}
+
 	void prop() {
 		if (meta.lazy) {
-			if (!left) {
-				cout << "WA" << endl;
-				exit(0);
-			}
 			left->meta.lazy ^= 1;
 			right->meta.lazy ^= 1;
 			meta.lazy = 0;
 		}
 	}
 
-	info merge(info &leftMeta, info &rightMeta) {
-		int actualLL = leftMeta.leftType ^ leftMeta.lazy;
-		int actualLR = leftMeta.rightType ^ leftMeta.lazy;
-		int actualRL = rightMeta.leftType ^ rightMeta.lazy;
-		int actualRR = rightMeta.rightType ^ rightMeta.lazy;
+	void merge() {
+		int actualLL = left->meta.leftType ^ left->meta.lazy;
+		int actualLR = left->meta.rightType ^ left->meta.lazy;
+		int actualRL = right->meta.leftType ^ right->meta.lazy;
+		int actualRR = right->meta.rightType ^ right->meta.lazy;
 
-		info ret;
-		ret.leftType = actualLL;
-		ret.rightType = actualRR;
+		meta.leftType = actualLL;
+		meta.rightType = actualRR;
 
-		ret.leftRun = leftMeta.leftRun;
-		if (actualLL == actualLR && actualLR == actualRL)
-			ret.leftRun += rightMeta.leftRun;
+		meta.leftRun = left->meta.leftRun;
+		if (actualLL == actualRL && left->meta.leftRun == (left->hi - left->lo + 1))
+			meta.leftRun += right->meta.leftRun;
 
-		ret.rightRun = rightMeta.rightRun;
-		if (actualRR == actualRL && actualRL == actualLR)
-			ret.rightRun += leftMeta.rightRun;
+		meta.rightRun = right->meta.rightRun;
+		if (actualRR == actualLR && right->meta.rightRun == (right->hi - right->lo + 1))
+			meta.rightRun += left->meta.rightRun;
 
-		vi newVal(2);
-		newVal[0] =
-			max(leftMeta.val[leftMeta.lazy], rightMeta.val[rightMeta.lazy]);
-		newVal[1] =
-			max(leftMeta.val[!leftMeta.lazy], rightMeta.val[!rightMeta.lazy]);
+		meta.val[0] =
+			max(left->meta.val[left->meta.lazy], right->meta.val[right->meta.lazy]);
+		meta.val[1] =
+			max(left->meta.val[!left->meta.lazy], right->meta.val[!right->meta.lazy]);
 
-		newVal[actualLL] = max(newVal[actualLL], leftMeta.leftRun);
-		newVal[actualRR] = max(newVal[actualRR], rightMeta.rightRun);
+		meta.val[actualLL] = max(meta.val[actualLL], left->meta.leftRun);
+		meta.val[actualRR] = max(meta.val[actualRR], right->meta.rightRun);
 		if (actualLR == actualRL)
-			newVal[actualLR] =
-				max(newVal[actualLR], leftMeta.rightRun + rightMeta.leftRun);
-		ret.val = newVal;
-
-		return ret;
+			meta.val[actualLR] =
+				max(meta.val[actualLR], left->meta.rightRun + right->meta.leftRun);
 	}
 
 	void flip(int l, int r) {
@@ -88,7 +83,7 @@ struct seg {
 			prop();
 			left->flip(l, r);
 			right->flip(l, r);
-			meta = merge(left->meta, right->meta);
+			merge();
 		}
 	}
 };
@@ -102,8 +97,7 @@ void solve(int t) {
 		int l, r; cin >> l >> r;
 		l--; r--;
 		tree.flip(l, r);
-		tree.prop();
-		cout << tree.meta.val[1] << ' ' << tree.meta.val[0] << endl;
+		tree.print();
 	}
 }
 
