@@ -10,10 +10,10 @@ typedef pair<int, int> pii;
 typedef vector<int> vi;
 
 struct info {
-	vi val = {0, 0};
+	vi val = {1, 0};
 	int lazy = 0;
-	int leftType = -1, rightType = -1;
-	int leftRun = 0, rightRun = 0;
+	int leftType = 0, rightType = 0;
+	int leftRun = 1, rightRun = 1;
 };
 
 struct seg {
@@ -28,47 +28,51 @@ struct seg {
 			right = new seg(mid + 1, hi, config);
 			meta = merge(left->meta, right->meta);
 		} else {
-			int type = config[lo] == 'S';
-			meta.val = {type, !type};
-			meta.leftType = type; meta.rightType = type;
-			meta.leftRun = 1; meta.rightRun = 1;
+			meta.lazy = config[lo] == 'S';
 		}
 	}
 
 	void prop() {
 		if (meta.lazy) {
+			if (!left) {
+				cout << "WA" << endl;
+				exit(0);
+			}
 			left->meta.lazy ^= 1;
 			right->meta.lazy ^= 1;
 			meta.lazy = 0;
 		}
 	}
 
-	info merge(info &leftNode, info &rightNode) {
-		int actualLL = leftNode.leftType ^ leftNode.lazy;
-		int actualLR = leftNode.rightType ^ leftNode.lazy;
-		int actualRL = rightNode.leftType ^ rightNode.lazy;
-		int actualRR = rightNode.rightType ^ rightNode.lazy;
+	info merge(info &leftMeta, info &rightMeta) {
+		int actualLL = leftMeta.leftType ^ leftMeta.lazy;
+		int actualLR = leftMeta.rightType ^ leftMeta.lazy;
+		int actualRL = rightMeta.leftType ^ rightMeta.lazy;
+		int actualRR = rightMeta.rightType ^ rightMeta.lazy;
 
 		info ret;
 		ret.leftType = actualLL;
 		ret.rightType = actualRR;
 
-		ret.leftRun = leftNode.leftRun;
+		ret.leftRun = leftMeta.leftRun;
 		if (actualLL == actualLR && actualLR == actualRL)
-			ret.leftRun += rightNode.leftRun;
+			ret.leftRun += rightMeta.leftRun;
 
-		ret.rightRun = rightNode.rightRun;
+		ret.rightRun = rightMeta.rightRun;
 		if (actualRR == actualRL && actualRL == actualLR)
-			ret.rightRun += leftNode.rightRun;
+			ret.rightRun += leftMeta.rightRun;
 
-		vi newVal = ret.val;
-		newVal[0] = max(leftNode.val[leftNode.lazy], rightNode.val[rightNode.lazy]);
-		newVal[1] = max(leftNode.val[!leftNode.lazy], rightNode.val[!rightNode.lazy]);
+		vi newVal(2);
+		newVal[0] =
+			max(leftMeta.val[leftMeta.lazy], rightMeta.val[rightMeta.lazy]);
+		newVal[1] =
+			max(leftMeta.val[!leftMeta.lazy], rightMeta.val[!rightMeta.lazy]);
 
-		newVal[actualLL] = max(newVal[actualLL], leftNode.leftRun);
-		newVal[actualRR] = max(newVal[actualRR], rightNode.rightRun);
+		newVal[actualLL] = max(newVal[actualLL], leftMeta.leftRun);
+		newVal[actualRR] = max(newVal[actualRR], rightMeta.rightRun);
 		if (actualLR == actualRL)
-			newVal[actualLR] = max(newVal[actualLR], leftNode.rightRun + rightNode.leftRun);
+			newVal[actualLR] =
+				max(newVal[actualLR], leftMeta.rightRun + rightMeta.leftRun);
 		ret.val = newVal;
 
 		return ret;
