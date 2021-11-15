@@ -15,54 +15,54 @@ vector<string> ids;
 vi dp;
 
 int calcInterval(int left) {
-	int furthestRight = left;
-	bool valid = true;
+    int furthestRight = left;
+    bool valid = true;
 
-	for (int i = 0; i < n - 1; i++) {
-		// cache old maxs
-		int curRight = max(left, dp[i]);
+    for (int i = 0; i < n - 1; i++) {
+        // cache old maxs
+        int curRight = max(left, dp[i]);
 
-		// find first loc that we differ
-		while (true) {
-			if (curRight >= l) break;
-			if (ids[i][curRight] != ids[i + 1][curRight]) break;
-			curRight++;
-		}
+        // find first loc that we differ
+        while (true) {
+            if (curRight >= l) break;
+            if (ids[i][curRight] != ids[i + 1][curRight]) break;
+            curRight++;
+        }
 
-		furthestRight = max(curRight, furthestRight);
-		if (curRight < l && ids[i][curRight] > ids[i + 1][curRight])
-			valid = false;
+        furthestRight = max(curRight, furthestRight);
+        if (curRight < l && ids[i][curRight] > ids[i + 1][curRight])
+            valid = false;
 
-		dp[i] = curRight;
-	}
+        dp[i] = curRight;
+    }
 
-	if (!valid || furthestRight >= l) return -1;
-	return furthestRight;
+    if (!valid || furthestRight >= l) return -1;
+    return furthestRight;
 }
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
-	cin.exceptions(cin.failbit);
+    cin.tie(0)->sync_with_stdio(0);
+    cin.exceptions(cin.failbit);
 
-	cin >> n >> l;
-	ids.resize(n);
-	for(auto &x : ids) cin >> x;
+    cin >> n >> l;
+    ids.resize(n);
+    for(auto &x : ids) cin >> x;
 
-	ans = {l, 0, l - 1};
-	dp.resize(n - 1, 0);
+    ans = {l, 0, l - 1};
+    dp.resize(n - 1, 0);
 
-	// for all starts
-	for (int left = 0; left < l; left++) {
-		// find out how far we have to move right to maintin lex order
-		int right;
-		if ((right = calcInterval(left)) == -1) continue;
+    // for all starts
+    for (int left = 0; left < l; left++) {
+        // find out how far we have to move right to maintin lex order
+        int right;
+        if ((right = calcInterval(left)) == -1) continue;
 
-		if (right - left + 1 < get<0>(ans))
-			ans = {right - left + 1, left, right};
-	}
+        if (right - left + 1 < get<0>(ans))
+            ans = {right - left + 1, left, right};
+    }
 
-	cout << get<1>(ans)+1 << ' ' << get<2>(ans)+1 << nl;
+    cout << get<1>(ans)+1 << ' ' << get<2>(ans)+1 << nl;
 
-	return 0;
+    return 0;
 }
 

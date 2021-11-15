@@ -32,9 +32,9 @@ pair<vector<bool>, vector<T>> dijkstra(
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);
-	cin.exceptions(cin.failbit);
+    cin.exceptions(cin.failbit);
 
-	int n, k; cin >> n >> k;
+    int n, k; cin >> n >> k;
     vector<set<int>> towers(n);
     int s, e;
     for (int i = 0; i < k; i++) {

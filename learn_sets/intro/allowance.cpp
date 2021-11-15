@@ -5,23 +5,23 @@ using namespace std;
 
 int downPow2(int n)
 {
-	n = n + 1;
-	while (n & n - 1)
-		n = n & n - 1;
+    n = n + 1;
+    while (n & n - 1)
+        n = n & n - 1;
 
-	return n;
+    return n;
 }
 
 int main()
 {
-	int w; cin >> w;
+    int w; cin >> w;
 
-	int n, des;
-	while (w--)
-	{
-		cin >> n;
-		des = downPow2(n) - 1;
-		cout << (int)log2(des)+1 << " " << des << "\n";
-	}
+    int n, des;
+    while (w--)
+    {
+        cin >> n;
+        des = downPow2(n) - 1;
+        cout << (int)log2(des)+1 << " " << des << "\n";
+    }
     return 0;
 }

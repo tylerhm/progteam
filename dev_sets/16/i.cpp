@@ -9,9 +9,9 @@ using namespace std;
 int main()
 {
     cin.tie(0)->sync_with_stdio(0);
-	cin.exceptions(cin.failbit);
+    cin.exceptions(cin.failbit);
 
-	int n; cin >> n;
+    int n; cin >> n;
     vector<string> s1(n), s2(n);
 
     for (auto &x : s1) cin >> x;

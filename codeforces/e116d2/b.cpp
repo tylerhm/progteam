@@ -10,33 +10,33 @@ typedef pair<int, int> pii;
 typedef vector<int> vi;
 
 void solve(int t) {
-	ll n, k; cin >> n >> k;
+    ll n, k; cin >> n >> k;
 
-	if (n == 1) {
-		cout << 0 << endl;
-		return;
-	}
+    if (n == 1) {
+        cout << 0 << endl;
+        return;
+    }
 
-	ll time = 0;
-	ll copied = 1;
-	while (copied < k) {
-		copied *= 2;
-		time++;
-	}
+    ll time = 0;
+    ll copied = 1;
+    while (copied < k) {
+        copied *= 2;
+        time++;
+    }
 
-	ll leftOver = n - copied;
-	ll timeLeft = ceil((double)leftOver / k);
+    ll leftOver = n - copied;
+    ll timeLeft = ceil((double)leftOver / k);
 
-	cout << time+timeLeft << endl;
+    cout << time+timeLeft << endl;
 }
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-	int t; cin >> t;
-	for (int tt = 1; tt <= t; tt++)
-		solve(tt);
+    int t; cin >> t;
+    for (int tt = 1; tt <= t; tt++)
+        solve(tt);
 
     return 0;
 }

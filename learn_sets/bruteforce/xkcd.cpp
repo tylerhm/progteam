@@ -30,7 +30,7 @@ void go(int idx, int sum, int last) {
         cout << endl;
         return;
     }
-    
+
     // last one, so we must ensure that our last place is valid
     if (idx == n - 1) {
         int lastChar = 42 - sum;
@@ -70,5 +70,5 @@ int main() {
 
     cout << "The answer to life, the universe and everything!" << endl;
 
-    return 0;    
+    return 0;
 }

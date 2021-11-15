@@ -44,11 +44,11 @@ void solve(int t) {
 int main()
 {
   cin.tie(0)->sync_with_stdio(0);
-	cin.exceptions(cin.failbit);
+    cin.exceptions(cin.failbit);
 
-	int tt; cin >> tt;
-	for (int t = 1; t <= tt; t++)
-		solve(t);
+    int tt; cin >> tt;
+    for (int t = 1; t <= tt; t++)
+        solve(t);
 
     return 0;
 }

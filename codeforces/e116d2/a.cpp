@@ -10,18 +10,18 @@ typedef pair<int, int> pii;
 typedef vector<int> vi;
 
 void solve(int t) {
-	string str; cin >> str;
-	str[0] = str.back();
-	cout << str << endl;
+    string str; cin >> str;
+    str[0] = str.back();
+    cout << str << endl;
 }
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
-	cin.exceptions(cin.failbit);
+    cin.tie(0)->sync_with_stdio(0);
+    cin.exceptions(cin.failbit);
 
-	int t; cin >> t;
-	for (int tt = 1; tt <= t; tt++)
-		solve(tt);
+    int t; cin >> t;
+    for (int tt = 1; tt <= t; tt++)
+        solve(tt);
 
-	return 0;
+    return 0;
 }

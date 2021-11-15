@@ -111,7 +111,7 @@ int main() {
             int a = uLoc.first;
             int b = vLoc.first;
 
-			int lca = rmq.query(rmqLo, rmqHi).second;
+            int lca = rmq.query(rmqLo, rmqHi).second;
 
             ll dist = 0;
             dist ^= seg.query(0, a+1);

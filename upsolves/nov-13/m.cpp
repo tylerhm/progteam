@@ -13,7 +13,7 @@ int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-	int m, n, q; cin >> m >> n >> q;
+    int m, n, q; cin >> m >> n >> q;
 
     return 0;
 }

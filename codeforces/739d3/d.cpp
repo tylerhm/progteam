@@ -18,7 +18,7 @@ void solve(int tc) {
         lo = hi;
         hi += inc;
         inc += 2;
-	shifts++;
+    shifts++;
     }
 
     lo++;

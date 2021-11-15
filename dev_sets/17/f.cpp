@@ -43,9 +43,9 @@ void solve(int n) {
 int main()
 {
     cin.tie(0)->sync_with_stdio(0);
-	cin.exceptions(cin.failbit);
+    cin.exceptions(cin.failbit);
 
-	ll n;
+    ll n;
     while (true) {
         try {
             cin >> n;

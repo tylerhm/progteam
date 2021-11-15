@@ -29,20 +29,20 @@ int main() {
     map<int, int> ax, ay;
     for (int i = 0; i < c; i++) {
         int x, y; cin >> x >> y;
-		if (monumentsX[x] > 1 || monumentsY[y] > 1) continue;
+        if (monumentsX[x] > 1 || monumentsY[y] > 1) continue;
         ax[x]++;
         ay[y]++;
-		churches.emplace(x, y);
+        churches.emplace(x, y);
     }
 
     int best = 0;
     pii bestLoc = {0, 0};
     for (auto x : xs) {
         for (auto y : ys) {
-			int total = 0;
-			if (monumentsX[x] == 1) total += ax[x];
-			if (monumentsY[y] == 1) total += ay[y];
-			bool iAmActivated = (monumentsX[x] < 2 && monumentsY[y] < 2) && (monumentsX[x] == 1 || monumentsY[y] == 1);
+            int total = 0;
+            if (monumentsX[x] == 1) total += ax[x];
+            if (monumentsY[y] == 1) total += ay[y];
+            bool iAmActivated = (monumentsX[x] < 2 && monumentsY[y] < 2) && (monumentsX[x] == 1 || monumentsY[y] == 1);
             if (iAmActivated && churches.count({x, y})) total--;
             if (total > best) {
                 best = total;

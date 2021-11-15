@@ -78,7 +78,7 @@ int main()
 
     int tt; cin >> tt;
     for (int t = 0; t < tt; t++)
-	solve(t);    
+    solve(t);    
 
     return 0;
 }

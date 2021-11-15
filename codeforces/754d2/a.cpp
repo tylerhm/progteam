@@ -10,31 +10,31 @@ typedef pair<int, int> pii;
 typedef vector<int> vi;
 
 void solve(int tt) {
-	int a, b, c; cin >> a >> b >> c;
+    int a, b, c; cin >> a >> b >> c;
 
-	int minVar = INT_MAX;
-	while (true) {
-		if (2*b < a + c) {
-			b++; a--;
-		} else if (2*b > a + c) {
-			b--; a++;
-		}
-		if (abs(a + c - 2*b) < minVar) {
-			minVar = abs(a + c - 2*b);
-		} else break;
-	}
+    int minVar = INT_MAX;
+    while (true) {
+        if (2*b < a + c) {
+            b++; a--;
+        } else if (2*b > a + c) {
+            b--; a++;
+        }
+        if (abs(a + c - 2*b) < minVar) {
+            minVar = abs(a + c - 2*b);
+        } else break;
+    }
 
-	cout << minVar << endl;
+    cout << minVar << endl;
 }
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-	int t; cin >> t;
-	for (int tt = 1; tt <= t; tt++) {
-		solve(tt);
-	}
+    int t; cin >> t;
+    for (int tt = 1; tt <= t; tt++) {
+        solve(tt);
+    }
 
     return 0;
 }

@@ -60,9 +60,9 @@ void solve(ll n) {
 int main()
 {
     cin.tie(0)->sync_with_stdio(0);
-	cin.exceptions(cin.failbit);
+    cin.exceptions(cin.failbit);
 
-	ll n; cin >> n;
+    ll n; cin >> n;
     while (n != 0) {
         solve(n);
         cin >> n;

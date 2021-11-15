@@ -12,10 +12,10 @@ void solve(int t) {
     cout << "Case #" << t << ": ";
 
     string one, two; cin >> one >> two;
-	if (sz(one) != sz(two)) {
-		cout << "NO" << endl;
-		return;
-	}
+    if (sz(one) != sz(two)) {
+        cout << "NO" << endl;
+        return;
+    }
 
     string doubled = one + one;
     string reversed = doubled;
