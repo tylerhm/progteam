@@ -53,53 +53,46 @@ struct Dinic {
 };
 
 void solve(int tt) {
-    int n; cin >> n;
-    double maxJump; cin >> maxJump;
+    cout << "Case #" << tt << ": ";
 
-    typedef pair<double, double> pdd;
-    auto canJump = [&](pdd &a, pdd &b) -> bool {
-        double dx = abs(a.first - b.first);
-        double dy = abs(a.second - b.second);
-        double dist = sqrt(dx*dx + dy*dy);
-        return dist <= maxJump;
+    int w, h, b; cin >> w >> h >> b;
+    vector<vector<bool>> river(h, vector<bool>(w, true));
+    for (int i = 0; i < b; i++) {
+        int x0, y0, x1, y1; cin >> x0 >> y0 >> x1 >> y1;
+        for (int y = y0; y <= y1; y++)
+            for (int x = x0; x <= x1; x++)
+                river[y][x] = false;
+    }
+
+    int DR[] = {1, 0, -1, 0}, DC[] = {0, 1, 0, -1};
+    auto getIdx = [&](int row, int col) -> int {
+        return 2 * (row * w + col);
     };
 
-    int totalPenguins = 0;
-    vector<vi> adj(n);
-    vector<tuple<pdd, int, int>> bergs(n);
-    for (int i = 0; i < n; i++) {
-        auto &[p, n, m] = bergs[i];
-        cin >> p.first >> p.second >> n >> m;
-        totalPenguins += n;
-        for (int j = i - 1; j >= 0; j--) {
-            if (canJump(get<0>(bergs[i]), get<0>(bergs[j]))) {
-                adj[i].push_back(j);
-                adj[j].push_back(i);
+    Dinic flow(2*w*h + 2);
+    int s = 2*w*h, t = s + 1;
+    for (int col = 0; col < w; col++) {
+        int bot = getIdx(h-1, col);
+        int top = getIdx(0, col);
+        if (river[h-1][col]) flow.addEdge(s, bot, 1);
+        if (river[0][col]) flow.addEdge(top, t, 1);
+    }
+    for (int row = 0; row < h; row++) {
+        for (int col = 0; col < w; col++) {
+            int idx = getIdx(row, col);
+            flow.addEdge(idx, idx+1, 1);
+            for (int d = 0; d < 4; d++) {
+                int nr = row + DR[d];
+                int nc = col + DC[d];
+                if (nr >= 0 && nr < h && nc >= 0 && nc < w) {
+                    int con = getIdx(nr, nc);
+                    if (river[nr][nc]) flow.addEdge(idx+1, con, 1);
+                }
             }
         }
     }
 
-    // Sources will always be penguins
-    // Make every node the sink to test
-    // Connections out go to a funnel node and then the rest
-    bool found = false;
-    int s = 2*n;
-    for (int t = 0; t < n; t++) {
-        Dinic flow(2*n + 1);
-        for (int i = 0; i < n; i++) {
-            if (i == t) continue;
-            flow.addEdge(s, 2*i, get<1>(bergs[i]));
-            flow.addEdge(2*i, 2*i+1, get<2>(bergs[i]));
-            for (int j : adj[i])
-                flow.addEdge(2*i+1, 2*j, 1e9);
-        }
-        if (flow.calc(s, 2*t) == totalPenguins - get<1>(bergs[t])) {
-            found = true;
-            cout << t << ' ';
-        }
-    }
-    if (!found) cout << -1;
-    cout << endl;
+    cout << flow.calc(s, t) << nl;
 }
 
 int main() {

@@ -52,63 +52,49 @@ struct Dinic {
     bool leftOfMinCut(int a) { return lvl[a] != 0; }
 };
 
-void solve(int tt) {
-    int n; cin >> n;
-    double maxJump; cin >> maxJump;
-
-    typedef pair<double, double> pdd;
-    auto canJump = [&](pdd &a, pdd &b) -> bool {
-        double dx = abs(a.first - b.first);
-        double dy = abs(a.second - b.second);
-        double dist = sqrt(dx*dx + dy*dy);
-        return dist <= maxJump;
-    };
-
-    int totalPenguins = 0;
-    vector<vi> adj(n);
-    vector<tuple<pdd, int, int>> bergs(n);
-    for (int i = 0; i < n; i++) {
-        auto &[p, n, m] = bergs[i];
-        cin >> p.first >> p.second >> n >> m;
-        totalPenguins += n;
-        for (int j = i - 1; j >= 0; j--) {
-            if (canJump(get<0>(bergs[i]), get<0>(bergs[j]))) {
-                adj[i].push_back(j);
-                adj[j].push_back(i);
-            }
-        }
-    }
-
-    // Sources will always be penguins
-    // Make every node the sink to test
-    // Connections out go to a funnel node and then the rest
-    bool found = false;
-    int s = 2*n;
-    for (int t = 0; t < n; t++) {
-        Dinic flow(2*n + 1);
-        for (int i = 0; i < n; i++) {
-            if (i == t) continue;
-            flow.addEdge(s, 2*i, get<1>(bergs[i]));
-            flow.addEdge(2*i, 2*i+1, get<2>(bergs[i]));
-            for (int j : adj[i])
-                flow.addEdge(2*i+1, 2*j, 1e9);
-        }
-        if (flow.calc(s, 2*t) == totalPenguins - get<1>(bergs[t])) {
-            found = true;
-            cout << t << ' ';
-        }
-    }
-    if (!found) cout << -1;
-    cout << endl;
-}
-
 int main() {
     cin.tie(0)->sync_with_stdio(0);
     cin.exceptions(cin.failbit);
 
-    int t; cin >> t;
-    for (int tt = 1; tt <= t; tt++)
-        solve(tt);
+    const int DIM = 12;
+    int n; cin >> n;
+    vector<vector<vector<bool>>> cells(DIM, vector<vector<bool>>(DIM, vector<bool>(DIM, false)));
+    for (int i = 0; i < n; i++) {
+        int x, y, z; cin >> x >> y >> z;
+        cells[x+1][y+1][z+1] = true;
+    }
+
+    auto idx = [&](int x, int y, int z) {
+        return x * DIM * DIM + y * DIM + z;
+    };
+
+    Dinic flow(DIM*DIM*DIM+2);
+    int s = DIM*DIM*DIM, t = s + 1;
+
+    int DX[] = {1, -1, 0, 0, 0, 0},
+        DY[] = {0, 0, 1, -1, 0, 0},
+        DZ[] = {0, 0, 0, 0, 1, -1};
+    for (int x = 0; x < DIM; x++)
+        for (int y = 0; y < DIM; y++)
+            for (int z = 0; z < DIM; z++) {
+                int from = idx(x, y, z);
+                if (!x || !y || !z || x == DIM - 1 || y == DIM - 1 || z == DIM - 1)
+                    flow.addEdge(s, from, 1);
+                if (cells[x][y][z]) continue;
+                for (int d = 0; d < 6; d++) {
+                    int nx = x + DX[d];
+                    int ny = y + DY[d];
+                    int nz = z + DZ[d];
+                    if (nx < 0 || nx >= DIM ||
+                        ny < 0 || ny >= DIM ||
+                        nz < 0 || nz >= DIM) continue;
+                    int to = idx(nx, ny, nz);
+                    if (cells[nx][ny][nz]) flow.addEdge(from, t, 1);
+                    else flow.addEdge(from, to, 1);
+                }
+            }
+
+    cout << flow.calc(s, t) << nl;
 
     return 0;
 }
