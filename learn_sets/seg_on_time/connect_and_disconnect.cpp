@@ -73,7 +73,7 @@ int main() {
         else {
             int a, b; cin >> a >> b;
             a--; b--;
-            pii e = {a, b};
+            pii e = minmax(a, b);
             if (type == '+') edgeToStart[e] = i;
             else {
                 s.logExistence(edgeToStart[e], i, e);
@@ -86,7 +86,7 @@ int main() {
         s.logExistence(p.second, s.r, p.first);
 
     RollbackUF dsu(n);
-    auto dfs = [&dsu, &toAns](seg *s, auto &&dfs) -> void {
+    auto dfs = [&](seg *s, auto &&dfs) -> void {
         int t = dsu.time();
         for (auto q : s->schrodenger)
             dsu.join(q.first, q.second);
