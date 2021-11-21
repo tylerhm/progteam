@@ -37,7 +37,7 @@ int main() {
     for (int jmp = a; jmp <= b; jmp++) {
         int loc = 0;
         int width = 0;
-        while (loc + jmp < sz(wordStart)) {
+        while (loc + jmp < sz(wordStart) - 1) {
             width += wordLen[loc] + 1;
             loc = wordStart[loc + jmp];
         }
