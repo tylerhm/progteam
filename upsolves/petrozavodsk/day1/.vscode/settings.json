@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "iostream": "cpp",
+        "tuple": "cpp",
+        "algorithm": "cpp",
+        "random": "cpp",
+        "type_traits": "cpp",
+        "ostream": "cpp",
+        "utility": "cpp",
+        "vector": "cpp",
+        "iosfwd": "cpp",
+        "iterator": "cpp"
+    }
+}
