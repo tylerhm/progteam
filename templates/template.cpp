@@ -25,6 +25,5 @@ int main() {
 #endif
 		solve(tc);
 
-
     return 0;
 }
