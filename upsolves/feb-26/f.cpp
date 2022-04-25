@@ -45,6 +45,36 @@ int main() {
             } else centroid = i;
         }
 
+    auto getComponent = [&](int v, int par, vi &list, auto &&getComponent) -> void {
+        list.push_back(v);
+        for (int u : adj[v]) if (u != par)
+            getComponent(u, v, list, getComponent);
+    };
+
+    vector<vi> forest(sz(adj[centroid]));
+    for (int i = 0; i < sz(adj[centroid]); i++)
+        getComponent(adj[centroid][i], centroid, forest[i], getComponent);
+
+    // Remove the centroid from the graph
+    for (int i = 0; i < N; i++) {
+        if (i == centroid) adj[i].clear();
+        for (int j = 0; j < sz(adj[i]); j++) if (adj[i][j] == centroid) {
+            adj[i].erase(begin(adj[i]) + j);
+            break;
+        }
+    }
+
+    // Find centroids of children
+    vector<vi> centroids(sz(forest));
+    for (int i = 0; i < sz(forest); i++) {
+        for (int j = 0; j < sz(forest[i]); j++) if (isCentroid(forest[i][j]))
+            centroids[i].push_back(forest[i][j]);
+    }
+
+    map<vi, int> dp;
+    for (int i = 0; i < sz(forest); i++) {
+
+    }
 
     return 0;
 }

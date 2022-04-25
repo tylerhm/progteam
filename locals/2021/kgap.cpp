@@ -63,11 +63,11 @@ int main() {
 
     for (int i = 0; i < n; i++) {
         int inp; cin >> inp;
-        
+
         seg.set(inp, max(seg.query(0, inp-k), seg.query(inp+k, seg.r)) + 1);
     }
 
     cout << seg.val << endl;
 
-    return 0;    
+    return 0;
 }
